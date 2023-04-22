@@ -1,9 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import { View, SafeAreaView, ScrollView } from "react-native";
+import { View, SafeAreaView, ScrollView, Platform } from "react-native";
 import { Button } from "react-native-paper";
 import { SvgXml } from "react-native-svg";
-import logo from "../assets/logo.js";
+import logo from "../../assets/logo.js";
 import styled from "styled-components";
 import { TextInput } from "react-native-paper";
 
@@ -22,26 +22,23 @@ const InputSection = styled.View`
 
 const LogoSection = styled.View`
   margin-bottom: 30px;
-  //   padding: 10px;
-  //   border-radius: 10px;
-  //   background-color: #697597;
   justify-content: center;
   align-items: center;
-  font-family: "Roboto";
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
 const LogoText = styled.Text`
-  font-size: 32px;
+  font-size: 34px;
   color: white;
   font-weight: bold;
-  font-family: "Roboto";
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
 const Label = styled.Text`
   font-size: 16px;
   color: white;
   font-weight: bold;
-  font-family: "Roboto";
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
 const Line = styled.View`
@@ -57,7 +54,7 @@ const LoginText = styled.Text`
   font-weight: bold;
   text-align: center;
   margin: 5px 0;
-  font-family: "Roboto";
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
 const ForgotPassword = styled.Text`
@@ -71,7 +68,7 @@ const ErrorText = styled.Text`
     font-weight: bold;
     text-align: center;
     margin: 5px 0;
-    font-family: "Roboto";
+    ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
     `;
 
 const validateEmail = (email) => {
@@ -109,19 +106,18 @@ export default function LoginScreen() {
     <CustomSafeArea>
       <ScrollView>
         <LogoSection>
-          <SvgXml xml={logo} width="400" height="300" color="white" />
+          <SvgXml xml={logo} height="250" color="white" />
           <LogoText>Crypto Exchange</LogoText>
         </LogoSection>
         <InputSection>
           <LoginText>Login</LoginText>
           <Line></Line>
-          {/* if there is an error, show it here */}
             {errors ? <ErrorText>{errors}</ErrorText> : null}
           <View>
             <Label>Email</Label>
             <TextInput
               value={email}
-              outlineColor="#3658C8"
+              outlineColor="#FCD434"
               mode="outlined"
               onChangeText={(text) => setEmail(text)}
               placeholder="email@gmail.com"
@@ -132,6 +128,7 @@ export default function LoginScreen() {
             <Label>Password</Label>
             <TextInput
               mode="outlined"
+              outlineColor="#FCD434"
               placeholder="*******"
               secureTextEntry={!showPassword}
               right={
