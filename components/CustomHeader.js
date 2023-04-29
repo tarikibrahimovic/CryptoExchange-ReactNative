@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesome } from "@expo/vector-icons";
+import { Platform } from "react-native";
 
 const Header = styled.View`
   background-color: #1f2630;
-  height: 60px;
+  height: ${Platform.OS === "ios" ? "60px" : "100px"};
   align-items: center;
   justify-content: center;
   padding-top: 20px;
