@@ -6,18 +6,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import WalletScreen from "./screens/WalletScreen/WalletScreen";
+import { CryptoContextProvider } from "./context/CryptoContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <>
+    <CryptoContextProvider>
       <NavigationContainer>
         <MainTabNavigator />
       </NavigationContainer>
       <StatusBar style="light" />
-    </>
+    </CryptoContextProvider>
   );
 }
 

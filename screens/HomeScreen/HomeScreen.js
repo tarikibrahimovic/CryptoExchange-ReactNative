@@ -1,15 +1,15 @@
 import React from "react";
-import WelcomeSection from "../../components/WelcomeSection";
+// import WelcomeSection from "../../components/WelcomeSection";
+// import CryptoList from "../../components/CryptoList";
 import CustomHeader from "../../components/CustomHeader";
-import CryptoList from "../../components/CryptoList";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
+import HomeBody from "../../components/HomeBody";
 
 export default function HomeScreen() {
   return (
-    <ScrollView>
-      <CustomHeader/>
-      <WelcomeSection />
-      <CryptoList/>
-    </ScrollView>
+    <>
+      <CustomHeader />
+      <HomeBody/>
+    </>
   );
 }

@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import CryptoListItem from "./CryptoListItem";
-// import { SvgUri } from "react-native-svg";
-import SvgUri from "react-native-svg-uri";
+import { CoinsList } from "../context/CryptoContext";
 // import { useNavigation } from "@react-navigation/native";
 // import { LineChart, Grid } from "react-native-svg-charts";
 // import * as shape from "d3-shape";
 
 export default function CryptoList() {
   const [coins, setCoins] = useState([]);
+  const { active, filter } = useContext(CoinsList);
+  const [filteredData, setFilteredData] = useState([]);
+  const [hotCoins, setHotCoins] = useState([]);
 
   const url =
     "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
@@ -37,14 +38,34 @@ export default function CryptoList() {
     fetch(url, options)
       .then((response) => response.json())
       .then((result) => {
-        //remove 9th element from array
-        result.data.coins.splice(9, 1);
-        result.data.coins.splice(18, 2);
-        console.log(result.data.coins[1].iconUrl);
         setCoins(result.data.coins);
+        setFilteredData(result.data.coins);
+        console.log(result.data.coins[0], result.data.coins[1], result.data.coins[2]);
       })
       .catch((error) => console.log("error", error));
   }, []);
+
+  // useEffect(() => {
+  //   fetch("https://api.coingecko.com/api/v3/search/trending", {
+  //     method: "GET",
+  //   }).then((response) => response.json())
+  //   .then((result) => {
+  //     setHotCoins(result.coins);
+  //     console.log(result.coins);
+  //   }).catch((error) => console.log("error", error));
+  // }, []);
+
+  useEffect(() => {
+    if (filter === "Hot"){
+      setFilteredData(coins.sort((a, b) => a["24hVolume"] - b["24hVolume"]))
+    }
+    else if(filter === "Market Cap"){
+      setFilteredData(coins.sort((a, b) => a.marketCap - b.marketCap))
+    }
+    else if(filter === "Price"){
+      setFilteredData(coins.sort((a, b) => a.price - b.price))
+    }
+  }, [filter]);
 
   // function reformating() {
   //   const reformated = sparkline.map((item) => {
@@ -64,20 +85,9 @@ export default function CryptoList() {
       >
         <Grid/>
       </LineChart> */}
-      {/* <FlatList
-        data={coins}
-        renderItem={({ item }) => {
-        return <CryptoListItem coin={item} iconUrl={item.iconUrl} />
-      }}
-        keyExtractor={(item) => item.uuid}
-      /> */}
-      {/* <SvgUri
-        width="50"
-        height="50"
-        // uri={coins[4].iconUrl}
-        // uri="https://cdn.coinranking.com/rk4RKHOuW/eth.svg"
-        source={{uri: "https://cdn.coinranking.com/jkDf8sQbY/usdc.svg"}}
-      /> */}
+      {filteredData.map((item) => (
+        <CryptoListItem coin={item} />
+      ))}
     </>
   );
 }
