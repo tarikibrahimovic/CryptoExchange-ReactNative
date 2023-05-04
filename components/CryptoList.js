@@ -40,7 +40,7 @@ export default function CryptoList() {
       .then((result) => {
         setCoins(result.data.coins);
         setFilteredData(result.data.coins);
-        console.log(result.data.coins[0], result.data.coins[1], result.data.coins[2]);
+        // console.log(result.data.coins[0], result.data.coins[1], result.data.coins[2]);
       })
       .catch((error) => console.log("error", error));
   }, []);
@@ -56,14 +56,12 @@ export default function CryptoList() {
   // }, []);
 
   useEffect(() => {
-    if (filter === "Hot"){
-      setFilteredData(coins.sort((a, b) => a["24hVolume"] - b["24hVolume"]))
-    }
-    else if(filter === "Market Cap"){
-      setFilteredData(coins.sort((a, b) => a.marketCap - b.marketCap))
-    }
-    else if(filter === "Price"){
-      setFilteredData(coins.sort((a, b) => a.price - b.price))
+    if (filter === "Hot") {
+      setFilteredData(coins.sort((a, b) => a["24hVolume"] - b["24hVolume"]));
+    } else if (filter === "Market Cap") {
+      setFilteredData(coins.sort((a, b) => a.marketCap - b.marketCap));
+    } else if (filter === "Price") {
+      setFilteredData(coins.sort((a, b) => a.price - b.price));
     }
   }, [filter]);
 
@@ -85,9 +83,12 @@ export default function CryptoList() {
       >
         <Grid/>
       </LineChart> */}
-      {filteredData.map((item) => (
-        <CryptoListItem coin={item} />
-      ))}
+      {filteredData.map((item, index) => 
+      (
+        <CryptoListItem coin={item} index={index} />
+      )
+        
+      )}
     </>
   );
 }

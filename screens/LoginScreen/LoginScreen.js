@@ -106,7 +106,7 @@ export default function LoginScreen() {
     <CustomSafeArea>
       <ScrollView>
         <LogoSection>
-          <SvgXml xml={logo} height="250" color="white" />
+          <SvgXml xml={logo()} height="250" color="white" />
           <LogoText>Crypto Exchange</LogoText>
         </LogoSection>
         <InputSection>
