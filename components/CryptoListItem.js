@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Avatar, Card, IconButton } from "react-native-paper";
 import SvgUri from "react-native-svg-uri";
@@ -24,7 +24,21 @@ const PercentageText = styled.Text`
   align-self: flex-end;
 `;
 
-const CryptoListItem = ({ coin, index }) => {
+const CryptoListItem = ({ coin }) => {
+  let allowedCoins = [
+    "Bitcoin",
+    "Ethereum",
+    "Litecoin",
+    "Ripple",
+    "Dogecoin",
+    "Tether USD",
+    "BNB",
+    "Cardano",
+    "Polkadot",
+    "XRP",
+    "Bitcoin Cash",
+    "Ethereum Classic",
+  ];
   return (
     <View>
       <CustomCard>
@@ -42,22 +56,19 @@ const CryptoListItem = ({ coin, index }) => {
                   uri: coin.iconUrl,
                 }}
               />
-            ) : index < 6 ? (
-              <SvgUri
-                {...props}
-                width="50"
-                height="50"
-                source={{
-                  uri: coin.iconUrl,
-                }}
-              />
             ) : (
+              allowedCoins.includes(coin.name) ? (
+                <SvgUri
+                  {...props}
+                  width="50"
+                  height="50"
+                  source={{
+                    uri: coin.iconUrl,
+                  }}
+                />
+              ) :
               // <SvgXml xml={logo()} height="70" width="70" {...props} color="white" />
-              <Avatar.Image
-                {...props}
-                size={50}
-                source={defaultCoin}
-              />
+              <Avatar.Image {...props} size={50} source={defaultCoin} />
             )
           }
           right={(props) => (

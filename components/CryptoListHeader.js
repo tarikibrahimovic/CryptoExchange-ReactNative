@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, memo } from "react";
 import { View, Text, Platform } from "react-native";
 import styled from "styled-components";
 import { CoinsList } from "../context/CryptoContext";
@@ -44,14 +44,19 @@ const PriceArrowContainer = styled.View`
   align-items: center;
 `;
 
-export default function CryptoListHeader() {
-  const { active, setActive, filter, setFilter } = useContext(CoinsList);
+export default memo(function CryptoListHeader() {
+  const { active, setActive, filter, setFilter, setIsLoading } =
+    useContext(CoinsList);
+  const [filterValue, setFilterValue] = useState("Hot");
 
   return (
     <Header>
       <Section>
         <HeaderText
-          onPress={() => setActive("WatchList")}
+          onPress={() => {
+            setIsLoading(true);
+            setActive("WatchList");
+          }}
           style={active === "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
           WatchList
@@ -69,7 +74,10 @@ export default function CryptoListHeader() {
             style={filter === "Hot" && { backgroundColor: "gray" }}
           >
             <FilterText
-              onPress={() => setFilter("Hot")}
+              onPress={() => {
+                setIsLoading(true);
+                setFilter("Hot");
+              }}
               style={filter === "Hot" ? { color: "#fff" } : { color: "gray" }}
             >
               Hot
@@ -79,7 +87,10 @@ export default function CryptoListHeader() {
             style={filter === "Market Cap" && { backgroundColor: "gray" }}
           >
             <FilterText
-              onPress={() => setFilter("Market Cap")}
+              onPress={() => {
+                setIsLoading(true);
+                setFilter("Market Cap");
+              }}
               style={
                 filter === "Market Cap" ? { color: "#fff" } : { color: "gray" }
               }
@@ -88,21 +99,42 @@ export default function CryptoListHeader() {
             </FilterText>
           </FilterTextWrapper>
           <FilterTextWrapper
-            style={[filter === "Price" && { backgroundColor: "gray" }, {flexDirection: "row"}]}
+            style={[
+              (filter === "ASC" || filter === "DESC") && {
+                backgroundColor: "gray",
+              },
+              { flexDirection: "row" },
+              { width: 70 },
+            ]}
           >
             <FilterText
-              onPress={() => setFilter("Price")}
-              style={filter === "Price" ? { color: "#fff" } : { color: "gray" }}
+              onPress={() => {
+                setIsLoading(true);
+                filter !== "ASC" ? setFilter("ASC") : setFilter("DESC");
+              }}
+              style={
+                filter === "ASC" || filter === "DESC"
+                  ? { color: "#fff" }
+                  : { color: "gray" }
+              }
             >
               Price
             </FilterText>
-              <PriceArrowContainer>
-                <AntDesign name="caretup" size={8} color={filter === "Price" ? "#fff" : "gray"} />
-                <AntDesign name="caretdown" size={8} color={filter === "Price" ? "#fff" : "gray"} />
-              </PriceArrowContainer>
+            <PriceArrowContainer>
+              <AntDesign
+                name="caretup"
+                size={8}
+                color={filter === "ASC" ? "#fff" : "#909090"}
+              />
+              <AntDesign
+                name="caretdown"
+                size={8}
+                color={filter === "DESC" ? "#fff" : "#909090"}
+              />
+            </PriceArrowContainer>
           </FilterTextWrapper>
         </Section>
       )}
     </Header>
   );
-}
+});

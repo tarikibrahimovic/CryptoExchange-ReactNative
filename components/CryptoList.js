@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import CryptoListItem from "./CryptoListItem";
 import { CoinsList } from "../context/CryptoContext";
+import { ActivityIndicator, TouchableOpacity, Text } from "react-native";
 // import { useNavigation } from "@react-navigation/native";
 // import { LineChart, Grid } from "react-native-svg-charts";
 // import * as shape from "d3-shape";
 
 export default function CryptoList() {
   const [coins, setCoins] = useState([]);
-  const { active, filter } = useContext(CoinsList);
+  const { active, filter, isLoading, setIsLoading } = useContext(CoinsList);
   const [filteredData, setFilteredData] = useState([]);
   const [hotCoins, setHotCoins] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
   const url =
     "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
@@ -22,27 +24,25 @@ export default function CryptoList() {
     },
   };
 
-  // async function getCoins() {
-  //   try {
-  //     const response = await fetch(url, options);
-  //     const result = await response.json();
-  //     setCoins(result.data.coins)
-  //     // console.log(result.data.coins[0]);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-  // getCoins();
+  async function getCoins() {
+    try {
+      setIsLoading(true);
+      const response = await fetch(url, options);
+      const result = await response.json();
+      setCoins(result.data.coins)
+      setFilteredData(result.data.coins)
+    } catch (error) {
+      console.error(error);
+    }
+    finally {
+      setIsLoading(false);
+    }
+  }
+
+  // console.log(loading);
 
   useEffect(() => {
-    fetch(url, options)
-      .then((response) => response.json())
-      .then((result) => {
-        setCoins(result.data.coins);
-        setFilteredData(result.data.coins);
-        // console.log(result.data.coins[0], result.data.coins[1], result.data.coins[2]);
-      })
-      .catch((error) => console.log("error", error));
+    getCoins();
   }, []);
 
   // useEffect(() => {
@@ -56,13 +56,18 @@ export default function CryptoList() {
   // }, []);
 
   useEffect(() => {
+    let pom = [...coins];
     if (filter === "Hot") {
-      setFilteredData(coins.sort((a, b) => a["24hVolume"] - b["24hVolume"]));
+      setFilteredData(pom);
     } else if (filter === "Market Cap") {
-      setFilteredData(coins.sort((a, b) => a.marketCap - b.marketCap));
-    } else if (filter === "Price") {
-      setFilteredData(coins.sort((a, b) => a.price - b.price));
+      setFilteredData(pom.sort((a, b) => parseFloat(a.marketCap) + parseFloat(b.marketCap)));
+    } else if (filter === "ASC") {
+      setFilteredData(pom.sort((a, b) => parseFloat(b.price) - parseFloat(a.price)));
     }
+    else if (filter === "DESC") {
+      setFilteredData(pom.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))); 
+    }
+    setIsLoading(false);
   }, [filter]);
 
   // function reformating() {
@@ -83,12 +88,12 @@ export default function CryptoList() {
       >
         <Grid/>
       </LineChart> */}
-      {filteredData.map((item, index) => 
+      {!isLoading ? (filteredData.map((item, index) => 
       (
         <CryptoListItem coin={item} index={index} />
-      )
+      ))
         
-      )}
+      ) : <ActivityIndicator size="large" />}
     </>
   );
 }
