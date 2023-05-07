@@ -1,7 +1,7 @@
 import React, { useContext, useState, memo } from "react";
 import { View, Text, Platform } from "react-native";
 import styled from "styled-components";
-import { CoinsList } from "../context/CryptoContext";
+import { CoinsList } from "../../context/CryptoContext";
 import { AntDesign } from "@expo/vector-icons";
 
 const Header = styled.View`
@@ -47,7 +47,6 @@ const PriceArrowContainer = styled.View`
 export default memo(function CryptoListHeader() {
   const { active, setActive, filter, setFilter, setIsLoading } =
     useContext(CoinsList);
-  const [filterValue, setFilterValue] = useState("Hot");
 
   return (
     <Header>
@@ -55,14 +54,17 @@ export default memo(function CryptoListHeader() {
         <HeaderText
           onPress={() => {
             setIsLoading(true);
-            setActive("WatchList");
+            active !=="WatchList" && setActive("WatchList");
           }}
           style={active === "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
           WatchList
         </HeaderText>
         <HeaderText
-          onPress={() => setActive("Top10")}
+          onPress={() => {
+            setIsLoading(true);
+            active !== "Top10" && setActive("Top10");
+          }}
           style={active !== "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
           Top 10
@@ -76,7 +78,7 @@ export default memo(function CryptoListHeader() {
             <FilterText
               onPress={() => {
                 setIsLoading(true);
-                setFilter("Hot");
+                filter !== "Hot" && setFilter("Hot");
               }}
               style={filter === "Hot" ? { color: "#fff" } : { color: "gray" }}
             >
@@ -89,7 +91,7 @@ export default memo(function CryptoListHeader() {
             <FilterText
               onPress={() => {
                 setIsLoading(true);
-                setFilter("Market Cap");
+                filter !== "Market Cap" && setFilter("Market Cap");
               }}
               style={
                 filter === "Market Cap" ? { color: "#fff" } : { color: "gray" }

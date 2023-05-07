@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import CryptoListItem from "./CryptoListItem";
-import { CoinsList } from "../context/CryptoContext";
+import { CoinsList } from "../../context/CryptoContext";
 import { ActivityIndicator, TouchableOpacity, Text } from "react-native";
 // import { useNavigation } from "@react-navigation/native";
 // import { LineChart, Grid } from "react-native-svg-charts";
 // import * as shape from "d3-shape";
 
+
 export default function CryptoList() {
   const [coins, setCoins] = useState([]);
-  const { active, filter, isLoading, setIsLoading } = useContext(CoinsList);
+  const { active, filter, isLoading, setIsLoading, favoriteCoins } =
+    useContext(CoinsList);
   const [filteredData, setFilteredData] = useState([]);
-  const [hotCoins, setHotCoins] = useState([]);
-  // const [loading, setLoading] = useState(true);
 
   const url =
     "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
@@ -29,12 +29,11 @@ export default function CryptoList() {
       setIsLoading(true);
       const response = await fetch(url, options);
       const result = await response.json();
-      setCoins(result.data.coins)
-      setFilteredData(result.data.coins)
+      setCoins(result.data.coins);
+      // setFilteredData(result.data.coins);
     } catch (error) {
       console.error(error);
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   }
@@ -56,19 +55,51 @@ export default function CryptoList() {
   // }, []);
 
   useEffect(() => {
-    let pom = [...coins];
-    if (filter === "Hot") {
-      setFilteredData(pom);
-    } else if (filter === "Market Cap") {
-      setFilteredData(pom.sort((a, b) => parseFloat(a.marketCap) + parseFloat(b.marketCap)));
-    } else if (filter === "ASC") {
-      setFilteredData(pom.sort((a, b) => parseFloat(b.price) - parseFloat(a.price)));
+    setIsLoading(true);
+    if (active === "Top10") {
+      let pom = [...coins];
+      setFilteredData([]);
+      setTimeout(() => {
+        if (filter === "Hot") {
+          setFilteredData(pom);
+        } else if (filter === "Market Cap") {
+          setFilteredData(
+            pom.sort(
+              (a, b) => parseFloat(a.marketCap) + parseFloat(b.marketCap)
+            )
+          );
+        } else if (filter === "ASC") {
+          setFilteredData(
+            pom.sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
+          );
+        } else if (filter === "DESC") {
+          setFilteredData(
+            pom.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+          );
+        }
+      }, 10);
     }
-    else if (filter === "DESC") {
-      setFilteredData(pom.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))); 
+    else if (active === "WatchList") {
+      setFilteredData([]);
+      setTimeout(() => {
+        setFilteredData(favoriteCoins);
+      }, 10);
     }
     setIsLoading(false);
-  }, [filter]);
+  }, [filter, active]);
+
+  // useEffect(() => {
+  //   setFilteredData([]);
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     if (active === "WatchList") {
+  //       setFilteredData(favoriteCoins);
+  //     } else if (active === "Coins") {
+  //       setFilteredData(coins);
+  //     }
+  //   }, 10);
+  //   setIsLoading(false);
+  // }, [active]);
 
   // function reformating() {
   //   const reformated = sparkline.map((item) => {
@@ -76,6 +107,7 @@ export default function CryptoList() {
   //   });
   //   return reformated;
   // }
+
 
   return (
     <>
@@ -88,12 +120,14 @@ export default function CryptoList() {
       >
         <Grid/>
       </LineChart> */}
-      {!isLoading ? (filteredData.map((item, index) => 
-      (
-        <CryptoListItem coin={item} index={index} />
-      ))
-        
-      ) : <ActivityIndicator size="large" />}
+      {!isLoading ? (
+        filteredData.map((item, index) => (
+          <CryptoListItem coin={item} index={index} />
+        ))
+      ) : (
+        <ActivityIndicator size="large" />
+      )}
     </>
   );
+  isLoading;
 }

@@ -7,18 +7,22 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import WalletScreen from "./screens/WalletScreen/WalletScreen";
 import { CryptoContextProvider } from "./context/CryptoContext";
+import SearchScreen from "./screens/SearchScreen/SearchScreen";
+import { SafeAreaView } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#1F2630" }}>
     <CryptoContextProvider>
       <NavigationContainer>
         <MainTabNavigator />
       </NavigationContainer>
       <StatusBar style="light" />
     </CryptoContextProvider>
+    </SafeAreaView>
   );
 }
 
@@ -33,6 +37,21 @@ function AuthStackNavigator() {
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function HomeStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: {
+          backgroundColor: "#1F2630",
+        },
+      }}
+    >
+      <Stack.Screen name="Search" component={SearchScreen} />
     </Stack.Navigator>
   );
 }
@@ -75,6 +94,11 @@ function MainTabNavigator() {
         name="AuthStack"
         options={{ tabBarButton: () => null, tabBarVisible: false }}
         component={AuthStackNavigator}
+      />
+      <Tab.Screen
+        name="HomeStack"
+        options={{ tabBarButton: () => null, tabBarVisible: false }}
+        component={HomeStackNavigator}
       />
     </Tab.Navigator>
   );

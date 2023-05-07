@@ -1,9 +1,8 @@
-import React, { useState, memo } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React from "react";
 import { Avatar, Card, IconButton } from "react-native-paper";
 import SvgUri from "react-native-svg-uri";
 import styled from "styled-components";
-import defaultCoin from "../assets/defaultCoin.png";
+import defaultCoin from "../../assets/defaultCoin.png"
 
 const CustomCard = styled(Card)`
   margin: 10px;
@@ -40,7 +39,7 @@ const CryptoListItem = ({ coin }) => {
     "Ethereum Classic",
   ];
   return (
-    <View>
+    <>
       <CustomCard>
         <Card.Title
           title={coin?.name}
@@ -94,7 +93,7 @@ const CryptoListItem = ({ coin }) => {
           )}
         />
       </CustomCard>
-    </View>
+    </>
   );
 };
 
