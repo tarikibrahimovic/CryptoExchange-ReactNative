@@ -1,5 +1,5 @@
-import React, { useContext, useState, memo } from "react";
-import { View, Text, Platform } from "react-native";
+import React, { useContext } from "react";
+import { Platform } from "react-native";
 import styled from "styled-components";
 import { CoinsList } from "../../context/CryptoContext";
 import { AntDesign } from "@expo/vector-icons";
@@ -44,7 +44,7 @@ const PriceArrowContainer = styled.View`
   align-items: center;
 `;
 
-export default memo(function CryptoListHeader() {
+export default function CryptoListHeader() {
   const { active, setActive, filter, setFilter, setIsLoading } =
     useContext(CoinsList);
 
@@ -53,8 +53,10 @@ export default memo(function CryptoListHeader() {
       <Section>
         <HeaderText
           onPress={() => {
-            setIsLoading(true);
-            active !=="WatchList" && setActive("WatchList");
+            if (active !== "WatchList") {
+              setActive("WatchList");
+              setIsLoading(true);
+            }
           }}
           style={active === "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
@@ -62,8 +64,10 @@ export default memo(function CryptoListHeader() {
         </HeaderText>
         <HeaderText
           onPress={() => {
-            setIsLoading(true);
-            active !== "Top10" && setActive("Top10");
+            if (active !== "Top10") {
+              setActive("Top10");
+              setIsLoading(true);
+            }
           }}
           style={active !== "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
@@ -77,8 +81,10 @@ export default memo(function CryptoListHeader() {
           >
             <FilterText
               onPress={() => {
-                setIsLoading(true);
-                filter !== "Hot" && setFilter("Hot");
+                if (filter !== "Hot") {
+                  setFilter("Hot");
+                  setIsLoading(true);
+                }
               }}
               style={filter === "Hot" ? { color: "#fff" } : { color: "gray" }}
             >
@@ -90,8 +96,10 @@ export default memo(function CryptoListHeader() {
           >
             <FilterText
               onPress={() => {
-                setIsLoading(true);
-                filter !== "Market Cap" && setFilter("Market Cap");
+                if (filter !== "Market Cap") {
+                  setFilter("Market Cap");
+                  setIsLoading(true);
+                }
               }}
               style={
                 filter === "Market Cap" ? { color: "#fff" } : { color: "gray" }
@@ -111,8 +119,13 @@ export default memo(function CryptoListHeader() {
           >
             <FilterText
               onPress={() => {
-                setIsLoading(true);
-                filter !== "ASC" ? setFilter("ASC") : setFilter("DESC");
+                if (filter !== "ASC") {
+                  setIsLoading(true);
+                  setFilter("ASC");
+                } else if (filter === "ASC") {
+                  setIsLoading(true);
+                  setFilter("DESC");
+                }
               }}
               style={
                 filter === "ASC" || filter === "DESC"
@@ -139,4 +152,4 @@ export default memo(function CryptoListHeader() {
       )}
     </Header>
   );
-});
+}

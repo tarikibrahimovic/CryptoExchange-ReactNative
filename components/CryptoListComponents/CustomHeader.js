@@ -12,6 +12,7 @@ const Header = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  margin-top: 10px
 `;
 
 const Container = styled.View`

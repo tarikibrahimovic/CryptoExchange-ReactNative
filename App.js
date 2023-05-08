@@ -9,6 +9,7 @@ import WalletScreen from "./screens/WalletScreen/WalletScreen";
 import { CryptoContextProvider } from "./context/CryptoContext";
 import SearchScreen from "./screens/SearchScreen/SearchScreen";
 import { SafeAreaView } from "react-native";
+import CoinDetailsScreen from "./screens/CoinDetailsScreen/CoinDetailsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -16,12 +17,12 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#1F2630" }}>
-    <CryptoContextProvider>
-      <NavigationContainer>
-        <MainTabNavigator />
-      </NavigationContainer>
-      <StatusBar style="light" />
-    </CryptoContextProvider>
+      <CryptoContextProvider>
+        <NavigationContainer>
+          <MainTabNavigator />
+        </NavigationContainer>
+        <StatusBar style="light" />
+      </CryptoContextProvider>
     </SafeAreaView>
   );
 }
@@ -49,9 +50,11 @@ function HomeStackNavigator() {
         cardStyle: {
           backgroundColor: "#1F2630",
         },
+        tabBarVisible: false, // Add this line to hide the tab bar navigation
       }}
     >
       <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="Details" component={CoinDetailsScreen} />
     </Stack.Navigator>
   );
 }
@@ -61,7 +64,7 @@ function MainTabNavigator() {
     <Tab.Navigator
       sceneContainerStyle={{ backgroundColor: "#1F2630" }}
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color }) => {
           let iconName;
 
           if (route.name === "Home") {
@@ -87,6 +90,9 @@ function MainTabNavigator() {
         headerTintColor: "#fff",
         headerShown: false,
       })}
+      tabBarOptions={{
+        keyboardHidesTabBar: true,
+      }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Wallet" component={WalletScreen} />

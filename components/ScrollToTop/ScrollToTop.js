@@ -9,7 +9,7 @@ const ScrollToButton = styled.TouchableOpacity`
   z-index: 1000;
   background-color: #fcd434;
   padding: 10px;
-  border-radius: 50%;
+  border-radius: 10px;
 `;
 
 export default function ScrollToTop({ handleScrollToTop }) {

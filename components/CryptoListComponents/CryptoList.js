@@ -8,8 +8,7 @@ import { ActivityIndicator, TouchableOpacity, Text } from "react-native";
 
 
 export default function CryptoList() {
-  const [coins, setCoins] = useState([]);
-  const { active, filter, isLoading, setIsLoading, favoriteCoins } =
+  const { active, filter, isLoading, setIsLoading, favoriteCoins, coins, setCoins } =
     useContext(CoinsList);
   const [filteredData, setFilteredData] = useState([]);
 
@@ -37,8 +36,6 @@ export default function CryptoList() {
       setIsLoading(false);
     }
   }
-
-  // console.log(loading);
 
   useEffect(() => {
     getCoins();
@@ -88,26 +85,12 @@ export default function CryptoList() {
     setIsLoading(false);
   }, [filter, active]);
 
-  // useEffect(() => {
-  //   setFilteredData([]);
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     if (active === "WatchList") {
-  //       setFilteredData(favoriteCoins);
-  //     } else if (active === "Coins") {
-  //       setFilteredData(coins);
-  //     }
-  //   }, 10);
-  //   setIsLoading(false);
-  // }, [active]);
-
   // function reformating() {
   //   const reformated = sparkline.map((item) => {
   //     return parseInt(item);
   //   });
   //   return reformated;
   // }
-
 
   return (
     <>
