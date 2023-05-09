@@ -6,39 +6,54 @@ import { ActivityIndicator, TouchableOpacity, Text } from "react-native";
 // import { LineChart, Grid } from "react-native-svg-charts";
 // import * as shape from "d3-shape";
 
-
 export default function CryptoList() {
-  const { active, filter, isLoading, setIsLoading, favoriteCoins, coins, setCoins } =
-    useContext(CoinsList);
+  const {
+    active,
+    filter,
+    isLoading,
+    setIsLoading,
+    favoriteCoins,
+    // coins,
+    // setCoins,
+    fetchCoins,
+  } = useContext(CoinsList);
+  
   const [filteredData, setFilteredData] = useState([]);
+  const [coins, setCoins] = useState([]);
 
-  const url =
-    "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
-  const options = {
-    method: "GET",
-    headers: {
-      "content-type": "application/octet-stream",
-      "X-RapidAPI-Key": "07aedaa6bdmsh5086c5b7fe24ecep1ca830jsnc57d502e51b1",
-      "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
-    },
-  };
+  // const url =
+  //   "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
+  // const options = {
+  //   method: "GET",
+  //   headers: {
+  //     "content-type": "application/octet-stream",
+  //     "X-RapidAPI-Key": "07aedaa6bdmsh5086c5b7fe24ecep1ca830jsnc57d502e51b1",
+  //     "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
+  //   },
+  // };
 
-  async function getCoins() {
-    try {
-      setIsLoading(true);
-      const response = await fetch(url, options);
-      const result = await response.json();
-      setCoins(result.data.coins);
-      // setFilteredData(result.data.coins);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const apiUrl = process.env.COINS_URL;
+  const apiOptions = process.env.COINS_OPTIONS;
+
+  console.log(process.env.COINS_OPTIONS);
+
+  // console.log(coins);
+
+  // async function getCoins() {
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await fetch(url, options);
+  //     const result = await response.json();
+  //     setCoins(result.data.coins);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
-    getCoins();
+    fetchCoins(apiUrl, apiOptions, setCoins);
   }, []);
 
   // useEffect(() => {
@@ -75,8 +90,7 @@ export default function CryptoList() {
           );
         }
       }, 10);
-    }
-    else if (active === "WatchList") {
+    } else if (active === "WatchList") {
       setFilteredData([]);
       setTimeout(() => {
         setFilteredData(favoriteCoins);

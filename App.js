@@ -79,6 +79,7 @@ function MainTabNavigator() {
         tabBarStyle: {
           display: "flex",
         },
+        
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "gray",
 
