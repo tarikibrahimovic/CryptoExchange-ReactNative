@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import CryptoListItem from "./CryptoListItem";
 import { CoinsList } from "../../context/CryptoContext";
-import { ActivityIndicator, TouchableOpacity, Text } from "react-native";
-// import { useNavigation } from "@react-navigation/native";
-// import { LineChart, Grid } from "react-native-svg-charts";
-// import * as shape from "d3-shape";
+import { ActivityIndicator } from "react-native";
+import {COINS_URL, COINS_OPTIONS} from "../../env";
+
 
 export default function CryptoList() {
   const {
@@ -13,47 +12,15 @@ export default function CryptoList() {
     isLoading,
     setIsLoading,
     favoriteCoins,
-    // coins,
-    // setCoins,
+    coins,
+    setCoins,
     fetchCoins,
   } = useContext(CoinsList);
   
   const [filteredData, setFilteredData] = useState([]);
-  const [coins, setCoins] = useState([]);
-
-  // const url =
-  //   "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
-  // const options = {
-  //   method: "GET",
-  //   headers: {
-  //     "content-type": "application/octet-stream",
-  //     "X-RapidAPI-Key": "07aedaa6bdmsh5086c5b7fe24ecep1ca830jsnc57d502e51b1",
-  //     "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
-  //   },
-  // };
-
-  const apiUrl = process.env.COINS_URL;
-  const apiOptions = process.env.COINS_OPTIONS;
-
-  console.log(process.env.COINS_OPTIONS);
-
-  // console.log(coins);
-
-  // async function getCoins() {
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await fetch(url, options);
-  //     const result = await response.json();
-  //     setCoins(result.data.coins);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
 
   useEffect(() => {
-    fetchCoins(apiUrl, apiOptions, setCoins);
+    fetchCoins(COINS_URL, COINS_OPTIONS, setCoins);
   }, []);
 
   // useEffect(() => {
@@ -99,24 +66,9 @@ export default function CryptoList() {
     setIsLoading(false);
   }, [filter, active]);
 
-  // function reformating() {
-  //   const reformated = sparkline.map((item) => {
-  //     return parseInt(item);
-  //   });
-  //   return reformated;
-  // }
 
   return (
     <>
-      {/* <LineChart
-        style={{ height: 200 }}
-        data={reformating()}
-        contentInset={{ top: 30, bottom: 30 }}
-        curve={shape.curveNatural}
-        svg={{ fill: "rgba(134, 65, 244, 0.8)" }}
-      >
-        <Grid/>
-      </LineChart> */}
       {!isLoading ? (
         filteredData.map((item, index) => (
           <CryptoListItem coin={item} index={index} />

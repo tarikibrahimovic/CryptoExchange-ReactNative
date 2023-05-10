@@ -42,10 +42,14 @@ const CryptoListItem = ({ coin }) => {
   
   const navigation = useNavigation();
 
+
   return (
     <>
       <CustomCard onPress={() => {
-        navigation.navigate("HomeStack", { screen: "Details" });
+        navigation.navigate("HomeStack", {
+          screen: "Details",
+          params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
+        });
       }}>
         <Card.Title
           title={coin?.name}

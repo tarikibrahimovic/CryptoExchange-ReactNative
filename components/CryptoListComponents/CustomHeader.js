@@ -12,7 +12,7 @@ const Header = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  margin-top: 10px
+  margin-top: 10px;
 `;
 
 const Container = styled.View`
@@ -24,7 +24,7 @@ const Container = styled.View`
   justify-content: flex-end;
 `;
 
-export default function CustomHeader() {
+export default function CustomHeader(props) {
   const navigation = useNavigation();
   return (
     <Header>
@@ -35,6 +35,7 @@ export default function CustomHeader() {
           color="white"
           onPress={() => {
             navigation.navigate("HomeStack", { screen: "Search" });
+            // navigation.navigate("Search")
           }}
         />
         <FontAwesome name="user-circle-o" size={24} color="white" />

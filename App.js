@@ -50,7 +50,6 @@ function HomeStackNavigator() {
         cardStyle: {
           backgroundColor: "#1F2630",
         },
-        tabBarVisible: false, // Add this line to hide the tab bar navigation
       }}
     >
       <Stack.Screen name="Search" component={SearchScreen} />
@@ -76,10 +75,12 @@ function MainTabNavigator() {
           return <Ionicons name={iconName} size={24} color={color} />;
         },
 
+        unmountOnBlur: true,
+
         tabBarStyle: {
-          display: "flex",
+          display: route.name === "Search" ? "none" : "flex",
         },
-        
+
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "gray",
 
@@ -104,7 +105,12 @@ function MainTabNavigator() {
       />
       <Tab.Screen
         name="HomeStack"
-        options={{ tabBarButton: () => null, tabBarVisible: false }}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: "none",
+          },
+        }}
         component={HomeStackNavigator}
       />
     </Tab.Navigator>
