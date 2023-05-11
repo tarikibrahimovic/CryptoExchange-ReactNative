@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useRef, useState, memo } from "react";
-import { Searchbar } from "react-native-paper";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
-import { CoinsList } from "../../context/CryptoContext";
-import { ScrollView, ActivityIndicator } from "react-native";
-import CryptoListItem from "../../components/CryptoListComponents/CryptoListItem";
+import { useNavigation } from "@react-navigation/native";
+import { Text, ScrollView } from "react-native";
 import styled from "styled-components";
-import { useNavigation, StackActions } from "@react-navigation/native";
+import { Searchbar } from "react-native-paper";
+import { CoinsList } from "../../context/CryptoContext";
+import CryptoListItem from "../../components/CryptoListComponents/CryptoListItem";
 
 const SearchBar = styled(Searchbar)`
-  margin-top: 50px;
+  margin-top: 20px;
   margin-bottom: 30px;
   background-color: #29313c;
   width: 80%;
@@ -27,13 +27,23 @@ const CancelText = styled.Text`
   padding-top: 10px;
 `;
 
-export default memo(function SearchScreen() {
-  const { isLoading, coins } = useContext(CoinsList);
+const HeaderText = styled.Text`
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    margin: auto;
+    padding-top: 10px;
+`;
+
+
+export default function ExchangeScreen() {
+  const { isLoading, setIsLoading, coins, favoriteCoins } =
+    useContext(CoinsList);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
   const ref = useRef(null);
   const navigate = useNavigation();
-  const [filteredData, setFilteredData] = useState([]);
-  const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -45,12 +55,12 @@ export default memo(function SearchScreen() {
     navigate.goBack();
   };
 
-  console.log("render");
   useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
         setFilteredData(
-          coins.filter((item) => {
+          //   coins.filter((item) => {
+          favoriteCoins.filter((item) => {
             return item.name.includes(searchQuery);
           })
         );
@@ -58,9 +68,9 @@ export default memo(function SearchScreen() {
     }
   }, [searchQuery]);
 
-
   return (
     <>
+      <HeaderText>Choose your coin</HeaderText>
       <HeaderContainer>
         <SearchBar
           placeholder="Search"
@@ -87,7 +97,7 @@ export default memo(function SearchScreen() {
       >
         {!isLoading ? (
           filteredData.map((item) => {
-            return <CryptoListItem coin={item} />;
+            return <CryptoListItem coin={item} type="exchange"/>;
           })
         ) : (
           <ActivityIndicator size="large" />
@@ -95,4 +105,4 @@ export default memo(function SearchScreen() {
       </ScrollView>
     </>
   );
-});
+}

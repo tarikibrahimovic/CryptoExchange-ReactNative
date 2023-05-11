@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Avatar, Card, IconButton } from "react-native-paper";
 import SvgUri from "react-native-svg-uri";
 import styled from "styled-components";
 import defaultCoin from "../../assets/defaultCoin.png";
 import { useNavigation } from "@react-navigation/native";
+import { CoinsList } from "../../context/CryptoContext";
 
 const CustomCard = styled(Card)`
   margin: 10px;
@@ -14,7 +15,7 @@ const CustomCard = styled(Card)`
 
 const PriceText = styled.Text`
   font-size: 16px;
-  color: #fff
+  color: #fff;
 `;
 
 const PercentageText = styled.Text`
@@ -24,33 +25,27 @@ const PercentageText = styled.Text`
   align-self: flex-end;
 `;
 
-const CryptoListItem = ({ coin }) => {
-  let allowedCoins = [
-    "Bitcoin",
-    "Ethereum",
-    "Litecoin",
-    "Ripple",
-    "Dogecoin",
-    "Tether USD",
-    "BNB",
-    "Cardano",
-    "Polkadot",
-    "XRP",
-    "Bitcoin Cash",
-    "Ethereum Classic",
-  ];
-  
-  const navigation = useNavigation();
+const CryptoListItem = ({ coin, type="details" }) => {
 
+  const {allowedCoins} = useContext(CoinsList);
+
+  const navigation = useNavigation();
 
   return (
     <>
-      <CustomCard onPress={() => {
-        navigation.navigate("HomeStack", {
-          screen: "Details",
-          params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
-        });
-      }}>
+      <CustomCard
+        onPress={() => {
+          type === "details"
+            ? navigation.navigate("HomeStack", {
+                screen: "Details",
+                params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
+              })
+            : navigation.navigate("HomeStack", {
+                screen: "Calculator",
+                params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
+              });
+        }}
+      >
         <Card.Title
           title={coin?.name}
           subtitle={coin?.symbol}

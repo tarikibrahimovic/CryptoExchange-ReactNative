@@ -24,15 +24,16 @@ export default function CoinDetailsScreen() {
 
   useEffect(() => {
     // fetchCoins(COIN_URL(coinId), COIN_OPTIONS, setCoin);
+    console.log(coinId);
     setIsLoading(true);
     fetch(COIN_URL(coinId), COIN_OPTIONS)
       .then((res) => res.json())
       .then((result) => {
-        console.log(result.data.coin.sparkline);
+        console.log(result.data.coin);
         setCoin((prev) => (prev = result.data.coin));
         // setIsLoading(false);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.log("greska"))
       .finally(setIsLoading(false))
   }, []);
 
@@ -41,16 +42,16 @@ export default function CoinDetailsScreen() {
   return (
     <>
       {!isLoading && (
-        <LineChart
-          style={{ height: 200 }}
-          data={reformating()}
-          contentInset={{ top: 30, bottom: 30 }}
-          curve={shape.curveNatural}
-          svg={{ fill: "rgba(134, 65, 244, 0.8)" }}
-        >
-          <Grid />
-        </LineChart>
-        // <Text>nesot nesto</Text>
+        // <LineChart
+        //   style={{ height: 200 }}
+        //   data={reformating()}
+        //   contentInset={{ top: 30, bottom: 30 }}
+        //   curve={shape.curveNatural}
+        //   svg={{ fill: "rgba(134, 65, 244, 0.8)" }}
+        // >
+        //   <Grid />
+        // </LineChart>
+        <Text>nesot nesto</Text>
       )}
     </>
   );

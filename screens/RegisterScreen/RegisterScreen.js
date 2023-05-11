@@ -82,11 +82,12 @@ const validatePassword = (password) => {
   return password.length >= 8;
 };
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleLogin = () => {
     console.log("pokrenulo se");
@@ -108,9 +109,20 @@ export default function LoginScreen() {
           <LogoText>Crypto Exchange</LogoText>
         </LogoSection>
         <InputSection>
-          <LoginText>Login</LoginText>
+          <LoginText>Register</LoginText>
           <Line></Line>
           {errors ? <ErrorText>{errors}</ErrorText> : null}
+          <View>
+            <Label>Username</Label>
+            <TextInput
+              value={username}
+              outlineColor="#FCD434"
+              mode="outlined"
+              onChangeText={(text) => setUsername(text)}
+              placeholder="username"
+              required
+            />
+          </View>
           <View>
             <Label>Email</Label>
             <TextInput
@@ -145,15 +157,8 @@ export default function LoginScreen() {
               buttonColor="#FCD434"
               textColor="#1F2630"
             >
-              Login
+              Sing Up
             </Button>
-          </View>
-          <View>
-            <ForgotPassword>Forgot Password?</ForgotPassword>
-          </View>
-          <Line />
-          <View>
-            <ForgotPassword>Don't have an account? Sign Up!</ForgotPassword>
           </View>
         </InputSection>
       </ScrollView>

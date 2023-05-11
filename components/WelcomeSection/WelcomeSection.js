@@ -61,7 +61,9 @@ export default function WelcomeSection() {
           <Button
             mode="outlined"
             textColor="white"
-            onPress={() => console.log("Pressed")}
+            onPress={() => {
+              navigation.navigate("AuthStack", { screen: "Register" });
+            }}
           >
             Sign Up
           </Button>
