@@ -33,6 +33,7 @@ export default function CryptoList() {
   //   }).catch((error) => console.log("error", error));
   // }, []);
 
+
   useEffect(() => {
     setIsLoading(true);
     if (active === "Top10") {

@@ -9,6 +9,7 @@ import { COIN_URL, COIN_OPTIONS } from "../../env";
 export default function CoinDetailsScreen() {
   const { fetchCoins } = useContext(CoinsList);
   const [coin, setCoin] = useState();
+  const navigate = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const route = useRoute();
   const { coinId } = route.params;
@@ -51,7 +52,7 @@ export default function CoinDetailsScreen() {
         // >
         //   <Grid />
         // </LineChart>
-        <Text>nesot nesto</Text>
+        <Text onPress={() => (navigate.navigate("Home"))}>nesot nesto</Text>
       )}
     </>
   );

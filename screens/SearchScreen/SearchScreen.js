@@ -5,7 +5,8 @@ import { CoinsList } from "../../context/CryptoContext";
 import { ScrollView, ActivityIndicator } from "react-native";
 import CryptoListItem from "../../components/CryptoListComponents/CryptoListItem";
 import styled from "styled-components";
-import { useNavigation, StackActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SearchBar = styled(Searchbar)`
   margin-top: 50px;
@@ -45,7 +46,6 @@ export default memo(function SearchScreen() {
     navigate.goBack();
   };
 
-  console.log("render");
   useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
@@ -58,9 +58,8 @@ export default memo(function SearchScreen() {
     }
   }, [searchQuery]);
 
-
   return (
-    <>
+    <SafeAreaView style={{flex: 1}}>
       <HeaderContainer>
         <SearchBar
           placeholder="Search"
@@ -93,6 +92,6 @@ export default memo(function SearchScreen() {
           <ActivityIndicator size="large" />
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 });

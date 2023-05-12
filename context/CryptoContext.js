@@ -36,8 +36,8 @@ const CryptoContextProvider = ({ children }) => {
   };
 
   const getCoin = (coinId) => {
-    // return coins.find((coin) => coin.uuid === coinId);
-    return favoriteCoins.find((coin) => coin.uuid === coinId);
+    return coins.find((coin) => coin.uuid === coinId);
+    // return favoriteCoins.find((coin) => coin.uuid === coinId);
   };
 
 

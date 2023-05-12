@@ -1,5 +1,5 @@
-import React, {useContext} from "react";
-import { Avatar, Card, IconButton } from "react-native-paper";
+import React, { useContext } from "react";
+import { Avatar, Card } from "react-native-paper";
 import SvgUri from "react-native-svg-uri";
 import styled from "styled-components";
 import defaultCoin from "../../assets/defaultCoin.png";
@@ -25,9 +25,8 @@ const PercentageText = styled.Text`
   align-self: flex-end;
 `;
 
-const CryptoListItem = ({ coin, type="details" }) => {
-
-  const {allowedCoins} = useContext(CoinsList);
+const CryptoListItem = ({ coin, type = "details" }) => {
+  const { allowedCoins } = useContext(CoinsList);
 
   const navigation = useNavigation();
 
@@ -38,11 +37,11 @@ const CryptoListItem = ({ coin, type="details" }) => {
           type === "details"
             ? navigation.navigate("HomeStack", {
                 screen: "Details",
-                params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
+                params: { coinId: coin.uuid },
               })
             : navigation.navigate("HomeStack", {
                 screen: "Calculator",
-                params: { coinId: coin.uuid }, // Pass the coin ID as a parameter
+                params: { coinId: coin.uuid },
               });
         }}
       >

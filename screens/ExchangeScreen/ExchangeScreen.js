@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { useNavigation } from "@react-navigation/native";
-import { Text, ScrollView } from "react-native";
+import { ScrollView, SafeAreaView } from "react-native";
 import styled from "styled-components";
 import { Searchbar } from "react-native-paper";
 import { CoinsList } from "../../context/CryptoContext";
@@ -24,17 +24,15 @@ const CancelText = styled.Text`
   color: #fcd434;
   font-size: 16px;
   margin: 10px;
-  padding-top: 10px;
 `;
 
 const HeaderText = styled.Text`
-    color: #fff;
-    font-size: 20px;
-    font-weight: bold;
-    margin: auto;
-    padding-top: 10px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  margin: auto;
+  padding-top: 10px;
 `;
-
 
 export default function ExchangeScreen() {
   const { isLoading, setIsLoading, coins, favoriteCoins } =
@@ -59,8 +57,8 @@ export default function ExchangeScreen() {
     if (!isLoading) {
       setTimeout(() => {
         setFilteredData(
-          //   coins.filter((item) => {
-          favoriteCoins.filter((item) => {
+          coins.filter((item) => {
+            // favoriteCoins.filter((item) => {
             return item.name.includes(searchQuery);
           })
         );
@@ -69,7 +67,7 @@ export default function ExchangeScreen() {
   }, [searchQuery]);
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, paddingTop: 40 }}>
       <HeaderText>Choose your coin</HeaderText>
       <HeaderContainer>
         <SearchBar
@@ -97,12 +95,12 @@ export default function ExchangeScreen() {
       >
         {!isLoading ? (
           filteredData.map((item) => {
-            return <CryptoListItem coin={item} type="exchange"/>;
+            return <CryptoListItem coin={item} type="exchange" />;
           })
         ) : (
           <ActivityIndicator size="large" />
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }

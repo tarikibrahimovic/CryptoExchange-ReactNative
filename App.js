@@ -73,7 +73,7 @@ function MainTabNavigator() {
         tabBarIcon: ({ color }) => {
           if (route.name === "Home") {
             return (
-              <Ionicons name="stats-chart-outline" size={24} color={color} />
+              <Ionicons name="stats-chart-outline" size={26} color={color} />
             );
           } else if (route.name === "Exchange") {
             return (
@@ -92,15 +92,15 @@ function MainTabNavigator() {
               </View>
             );
           } else if (route.name === "Wallet") {
-            return <Ionicons name="wallet-outline" size={24} color={color} />;
+            return <Ionicons name="wallet-outline" size={26} color={color} />;
           }
-
-          return <Ionicons name={iconName} size={24} color={color} />;
         },
 
         unmountOnBlur: true,
 
-        tabBarLabel: "",
+        tabBarLabelStyle: {
+          display: "none",
+        },
 
         tabBarStyle: {
           display: "flex",
