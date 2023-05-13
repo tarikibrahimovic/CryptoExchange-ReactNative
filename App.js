@@ -15,20 +15,30 @@ import ExchangeScreen from "./screens/ExchangeScreen/ExchangeScreen";
 import { MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import CalculatorScreen from "./screens/CalculatorScreen/CalculatorScreen";
+import { ThemeProvider } from "styled-components";
+import { theme } from "./theme/index";
+import styled from "styled-components";
+
+const CustomSafeAreaView = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${(props) => props.theme.colors.primary};
+`;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#1F2630" }}>
-      <CryptoContextProvider>
-        <NavigationContainer>
-          <MainTabNavigator />
-        </NavigationContainer>
-        <StatusBar style="light" />
-      </CryptoContextProvider>
-    </SafeAreaView>
+    <ThemeProvider theme={theme}>
+      <CustomSafeAreaView>
+        <CryptoContextProvider>
+          <NavigationContainer>
+            <MainTabNavigator />
+          </NavigationContainer>
+          <StatusBar style="light" />
+        </CryptoContextProvider>
+      </CustomSafeAreaView>
+    </ThemeProvider>
   );
 }
 
@@ -38,7 +48,7 @@ function AuthStackNavigator() {
       screenOptions={{
         headerShown: false,
         cardStyle: {
-          backgroundColor: "#1F2630",
+          backgroundColor: theme.colors.primary,
         },
       }}
     >
@@ -54,7 +64,7 @@ function HomeStackNavigator() {
       screenOptions={{
         headerShown: false,
         cardStyle: {
-          backgroundColor: "#1F2630",
+          backgroundColor: theme.colors.primary,
         },
       }}
     >
@@ -68,7 +78,7 @@ function HomeStackNavigator() {
 function MainTabNavigator() {
   return (
     <Tab.Navigator
-      sceneContainerStyle={{ backgroundColor: "#1F2630" }}
+      sceneContainerStyle={{ backgroundColor: theme.colors.primary }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           if (route.name === "Home") {
@@ -87,7 +97,7 @@ function MainTabNavigator() {
                   name="compare-arrows"
                   size={32}
                   color="black"
-                  style={{ backgroundColor: "#FCD434" }}
+                  style={{ backgroundColor: theme.colors.logo }}
                 />
               </View>
             );
@@ -109,10 +119,10 @@ function MainTabNavigator() {
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "gray",
 
-        tabBarActiveBackgroundColor: "#1F2630",
-        tabBarInactiveBackgroundColor: "#1F2630",
+        tabBarActiveBackgroundColor: theme.colors.primary,
+        tabBarInactiveBackgroundColor: theme.colors.primary,
         headerStyle: {
-          backgroundColor: "#1F2630",
+          backgroundColor: theme.colors.primary,
         },
         headerTintColor: "#fff",
         headerShown: false,
