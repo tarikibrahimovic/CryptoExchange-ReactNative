@@ -18,6 +18,7 @@ import CalculatorScreen from "./screens/CalculatorScreen/CalculatorScreen";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./theme/index";
 import styled from "styled-components";
+import UserScreen from "./screens/UserScreen/UserScreen";
 
 const CustomSafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -69,6 +70,7 @@ function HomeStackNavigator() {
       }}
     >
       <Stack.Screen name="Calculator" component={CalculatorScreen} />
+      <Stack.Screen name="User" component={UserScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Details" component={CoinDetailsScreen} />
     </Stack.Navigator>

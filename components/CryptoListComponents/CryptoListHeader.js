@@ -71,7 +71,7 @@ export default function CryptoListHeader() {
           }}
           style={active !== "WatchList" ? { color: "#fff" } : { color: "gray" }}
         >
-          Top 10
+          Top Coins
         </HeaderText>
       </Section>
       {active !== "WatchList" && (

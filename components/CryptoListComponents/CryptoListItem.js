@@ -19,7 +19,6 @@ const PriceText = styled.Text`
 `;
 
 const PercentageText = styled.Text`
-  color: ${(props) => (props.positive ? "green" : "red")};
   font-size: 16px;
   font-weight: bold;
   align-self: flex-end;
@@ -76,6 +75,7 @@ const CryptoListItem = ({ coin, type = "details" }) => {
             <>
               <PercentageText
                 style={{
+                  color: coin.change > 0 ? "#00ff00" : "#ff0000",
                   fontSize: 16,
                   fontWeight: "bold",
                 }}

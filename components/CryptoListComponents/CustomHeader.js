@@ -35,10 +35,14 @@ export default function CustomHeader(props) {
           color="white"
           onPress={() => {
             navigation.navigate("HomeStack", { screen: "Search" });
-            // navigation.navigate("Search")
           }}
         />
-        <FontAwesome name="user-circle-o" size={24} color="white" />
+        <FontAwesome name="user-circle-o" size={24} color="white"
+          onPress={() => {
+            navigation.navigate("HomeStack", { screen: "User" });
+            
+          }}
+        />
       </Container>
     </Header>
   );

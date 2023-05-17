@@ -2,16 +2,20 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { LineChart, Grid } from "react-native-svg-charts";
 import * as shape from "d3-shape";
-import { Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { CoinsList } from "../../context/CryptoContext";
 import { COIN_URL, COIN_OPTIONS } from "../../env";
 import DetailsHeader from "../../components/DetailsScreenComponents/DetailsHeader";
+import HeroSection from "../../components/DetailsScreenComponents/HeroSection";
+import AboutSection from "../../components/DetailsScreenComponents/AboutSection";
+import styled from "styled-components";
+import BuySection from "../../components/DetailsScreenComponents/BuySection";
 
 export default function CoinDetailsScreen() {
   const { fetchCoins } = useContext(CoinsList);
   const [coin, setCoin] = useState();
   const navigate = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [sparkline, setSparkline] = useState([]);
   const [sparklineColor, setSparklineColor] = useState("green");
   const route = useRoute();
@@ -26,7 +30,7 @@ export default function CoinDetailsScreen() {
         const reformated = data.data.coin.sparkline.map((item) => {
           return parseInt(item);
         });
-        if (reformated[reformated.length - 1] < reformated[reformated.length - 2]) {
+        if (data.data.coin.change < 0) {
           setSparklineColor("red");
         }
         setSparkline(reformated);
@@ -35,22 +39,31 @@ export default function CoinDetailsScreen() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  console.log(coin);
-
   return (
     <>
-      <DetailsHeader coinId={coinId}/>
       {!isLoading && (
-        <LineChart
-          style={{ height: 200 }}
-          data={sparkline}
-          contentInset={{ top: 30, bottom: 30 }}
-          svg={{ stroke: sparklineColor }}
-        >
-          <Grid />
-        </LineChart>
+        <>
+          <DetailsHeader coinId={coinId} />
+          <CustomScrollView>
+            <HeroSection coin={coin} />
+            <LineChart
+              style={{ height: 200 }}
+              data={sparkline}
+              contentInset={{ top: 30, bottom: 30 }}
+              svg={{ stroke: sparklineColor }}
+            >
+              <Grid />
+            </LineChart>
+            <AboutSection coin={coin} />
+          </CustomScrollView>
+          <BuySection coin={coin} />
+        </>
       )}
-      <Text onPress={() => (navigate.navigate("Home"))}>nesot nesto</Text>
     </>
   );
 }
+
+const CustomScrollView = styled.ScrollView`
+  background-color: ${(props) => props.theme.colors.primary};
+  position: relative;
+`;

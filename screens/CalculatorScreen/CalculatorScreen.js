@@ -24,7 +24,7 @@ export default function CalculatorScreen() {
   const navigation = useNavigation();
 
   const handleBackPress = () => {
-    navigation.navigate("Exchange");
+    navigation.goBack();
   };
 
   useEffect(() => {
