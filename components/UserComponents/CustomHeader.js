@@ -32,7 +32,7 @@ export default function CustomHeader() {
           <AntDesign name="arrowleft" size={24} color={theme.colors.tertiary}
           onPress={() => (navigate.navigate("Home"))}
           />
-          <AboutText>About User</AboutText>
+          <AboutText>Account Info</AboutText>
         </HeaderContainer>
     );
 }

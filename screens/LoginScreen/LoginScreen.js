@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import {
   View,
-  SafeAreaView,
   ScrollView,
   Platform,
   KeyboardAvoidingView,

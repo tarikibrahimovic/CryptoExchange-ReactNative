@@ -19,6 +19,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme/index";
 import styled from "styled-components";
 import UserScreen from "./screens/UserScreen/UserScreen";
+import { ModalPortal } from "react-native-modals";
 
 const CustomSafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -38,6 +39,7 @@ export default function App() {
           </NavigationContainer>
           <StatusBar style="light" />
         </CryptoContextProvider>
+        <ModalPortal />
       </CustomSafeAreaView>
     </ThemeProvider>
   );
