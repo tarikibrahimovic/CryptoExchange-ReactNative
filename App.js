@@ -20,6 +20,7 @@ import { theme } from "./theme/index";
 import styled from "styled-components";
 import UserScreen from "./screens/UserScreen/UserScreen";
 import { ModalPortal } from "react-native-modals";
+import VerificationScreen from "./screens/VerificationScreen/VerificationScreen";
 
 const CustomSafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -75,6 +76,7 @@ function HomeStackNavigator() {
       <Stack.Screen name="User" component={UserScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Details" component={CoinDetailsScreen} />
+      <Stack.Screen name="Verification" component={VerificationScreen} />
     </Stack.Navigator>
   );
 }
