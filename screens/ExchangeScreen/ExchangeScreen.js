@@ -35,7 +35,7 @@ const HeaderText = styled.Text`
 `;
 
 export default function ExchangeScreen() {
-  const { isLoading, setIsLoading, coins, favoriteCoins } =
+  const { isLoading, coins } =
     useContext(CoinsList);
   const [searchQuery, setSearchQuery] = useState("");
   const [showScrollToTop, setShowScrollToTop] = useState(false);
@@ -58,7 +58,6 @@ export default function ExchangeScreen() {
       setTimeout(() => {
         setFilteredData(
           coins.filter((item) => {
-            // favoriteCoins.filter((item) => {
             return item.name.includes(searchQuery);
           })
         );

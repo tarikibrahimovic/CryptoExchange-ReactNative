@@ -19,14 +19,20 @@ export default function VerifySection() {
 }
 
 const VerifySectionContainer = styled.View`
-  flex: 1;
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${(props) => props.theme.colors.secondary};
+  margin: 0 10px;
+  margin-top: 20px;
+  padding: 20px 0;
+  border-radius: 10px;
+  gap: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
 `;
 
 const VerifySectionTitle = styled.Text`
-  font-size: 24px;
+  font-size: 18px;
   color: #fff;
   font-weight: bold;
   text-align: center;
@@ -38,11 +44,11 @@ const VerifyButton = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.colors.logo};
   padding: 10px;
   border-radius: 10px;
-  width: 80%;
+  width: 50%;
 `;
 
 const VerifyButtonText = styled.Text`
-  font-size: 24px;
+  font-size: 16px;
   color: black;
   font-weight: bold;
   text-align: center;

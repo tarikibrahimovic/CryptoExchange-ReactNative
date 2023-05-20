@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { LineChart, Grid } from "react-native-svg-charts";
-import * as shape from "d3-shape";
-import { ScrollView, Text } from "react-native";
-import { CoinsList } from "../../context/CryptoContext";
 import { COIN_URL, COIN_OPTIONS } from "../../env";
 import DetailsHeader from "../../components/DetailsScreenComponents/DetailsHeader";
 import HeroSection from "../../components/DetailsScreenComponents/HeroSection";
@@ -12,7 +9,6 @@ import styled from "styled-components";
 import BuySection from "../../components/DetailsScreenComponents/BuySection";
 
 export default function CoinDetailsScreen() {
-  const { fetchCoins } = useContext(CoinsList);
   const [coin, setCoin] = useState();
   const navigate = useNavigation();
   const [isLoading, setIsLoading] = useState(true);

@@ -11,7 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CalculatorScreen() {
-  const { getCoin, allowedCoins } = useContext(CoinsList);
+  const { getCoin, allowedCoins, user } = useContext(CoinsList);
   const coinId = useRoute().params.coinId;
   const [coin, setCoin] = useState();
   const [option, setOption] = useState("Sell");
@@ -39,8 +39,7 @@ export default function CalculatorScreen() {
       } else {
         setAmount(query * coin.price);
       }
-    }
-    else{
+    } else {
       setAmount(0.0);
     }
   }, [query, payingOption]);
@@ -92,8 +91,7 @@ export default function CalculatorScreen() {
     } else if (number === "." && !pom.includes(".")) {
       pom += number;
       setInputValue(pom);
-    }
-    else if (pom.length < 10) {
+    } else if (pom.length < 10) {
       pom += number.toString();
       setInputValue(pom);
       setQuery(parseFloat(pom));
@@ -145,29 +143,31 @@ export default function CalculatorScreen() {
             )}
             <LabelText>USD</LabelText>
           </InputView>
-          {option === "Sell" && <LabelContainer>
-            <OptionButton
-              onPress={() => {
-                handleQuery(20);
-              }}
-            >
-              <OptionText>20</OptionText>
-            </OptionButton>
-            <OptionButton
-              onPress={() => {
-                handleQuery(50);
-              }}
-            >
-              <OptionText>50</OptionText>
-            </OptionButton>
-            <OptionButton
-              onPress={() => {
-                handleQuery(100);
-              }}
-            >
-              <OptionText>100</OptionText>
-            </OptionButton>
-          </LabelContainer>}
+          {option === "Sell" && (
+            <LabelContainer>
+              <OptionButton
+                onPress={() => {
+                  handleQuery(20);
+                }}
+              >
+                <OptionText>20</OptionText>
+              </OptionButton>
+              <OptionButton
+                onPress={() => {
+                  handleQuery(50);
+                }}
+              >
+                <OptionText>50</OptionText>
+              </OptionButton>
+              <OptionButton
+                onPress={() => {
+                  handleQuery(100);
+                }}
+              >
+                <OptionText>100</OptionText>
+              </OptionButton>
+            </LabelContainer>
+          )}
           <LabelContainer>
             <LabelText>
               Amount: {amount} {coin?.symbol}
@@ -220,7 +220,16 @@ export default function CalculatorScreen() {
             </KeyboardRow>
             <KeyboardRow>
               <FinalButton>
-                <KeyboardText>{option === "Sell" ?  "Buy" : "Sell"}</KeyboardText>
+                <KeyboardText>
+                  {/* {option === "Sell" ?  "Buy" : "Sell"} */}
+                  {user.username === ""
+                    ? "Login"
+                    : !username.isVerified
+                    ? "Verify"
+                    : option === "Sell"
+                    ? "Buy"
+                    : "Sell"}
+                </KeyboardText>
               </FinalButton>
             </KeyboardRow>
           </Keyboard>

@@ -24,7 +24,7 @@ const AboutText = styled.Text`
     margin-left: 16px;
 `;
 
-export default function CustomHeader() {
+export default function CustomHeader({ headerText }) {
     const navigate = useNavigation();
 
     return (
@@ -32,7 +32,8 @@ export default function CustomHeader() {
           <AntDesign name="arrowleft" size={24} color={theme.colors.tertiary}
           onPress={() => (navigate.navigate("Home"))}
           />
-          <AboutText>Account Info</AboutText>
+          
+          <AboutText>{headerText}</AboutText>
         </HeaderContainer>
     );
 }

@@ -9,6 +9,19 @@ import { TextInput } from "react-native-paper";
 import { BACKEND_URL } from "../../env.js";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { CoinsList } from "../../context/CryptoContext.js";
+import * as SecureStore from "expo-secure-store";
+
+async function saveTokenAndUsername(token, username) {
+  await SecureStore.setItemAsync("jwtToken", token);
+  await SecureStore.setItemAsync("username", username);
+}
+
+async function getTokenAndUsername() {
+  const token = await SecureStore.getItemAsync("jwtToken");
+  const username = await SecureStore.getItemAsync("username");
+  // return { token, username };
+  console.log(token, username);
+}
 
 const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,7 +76,7 @@ export default function LoginScreen() {
             setErrors(data.error);
           } else {
             setErrors("");
-            console.log(data);
+            saveTokenAndUsername(data.token, data.username);
             setUser((prev) => {
               return {
                 username: data.username,
@@ -73,6 +86,7 @@ export default function LoginScreen() {
                 isVerified: data.token ? true : false,
               };
             });
+
             navigation.navigate("Home");
           }
         })

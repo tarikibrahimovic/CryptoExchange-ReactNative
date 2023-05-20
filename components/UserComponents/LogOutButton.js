@@ -1,6 +1,44 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Button } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
+import { CoinsList } from "../../context/CryptoContext.js";
+
+export default function LogOutButton() {
+  const { setUser } = useContext(CoinsList);
+
+  const navigation = useNavigation();
+
+  const logOut = async () => {
+    await SecureStore.deleteItemAsync("jwtToken");
+    await SecureStore.deleteItemAsync("username");
+    setUser((prev) => {
+      return {
+        username: "",
+        email: "",
+        role: "",
+        token: "",
+        isVerified: false,
+      };
+    });
+    navigation.navigate("Home");
+  };
+
+  return (
+    <>
+      <Container>
+        <SubmitButton
+          onPress={() => {
+            logOut();
+          }}
+        >
+          <SubmitButtonText>Log out</SubmitButtonText>
+        </SubmitButton>
+      </Container>
+    </>
+  );
+}
 
 const Container = styled.View`
   display: flex;
@@ -23,19 +61,3 @@ const SubmitButtonText = styled.Text`
   font-weight: bold;
   text-align: center;
 `;
-
-export default function LogOutButton() {
-  return (
-    <>
-      <Container>
-        <SubmitButton
-          onPress={() => {
-            console.log("Log out button pressed");
-          }}
-        >
-          <SubmitButtonText>Log out</SubmitButtonText>
-        </SubmitButton>
-      </Container>
-    </>
-  );
-}

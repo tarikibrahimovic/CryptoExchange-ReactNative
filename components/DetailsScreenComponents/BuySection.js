@@ -1,6 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
+import { CoinsList } from "../../context/CryptoContext";
+
+export default function BuySection({ coin }) {
+  const { user } = useContext(CoinsList);
+  const navigation = useNavigation();
+  return (
+    <Container>
+      <PriceText>Current Price: ${parseFloat(coin.price).toFixed(2)}</PriceText>
+      <BuyButton
+        onPress={() => {
+          if (user.username === "") {
+            navigation.navigate("AuthStack", { screen: "Login" });
+          } else if (!user.isVerified) {
+            navigation.navigate("HomeStack", { screen: "Verification" });
+          } else {
+            navigation.navigate("HomeStack", {
+              screen: "Calculator",
+              params: { coin },
+            });
+          }
+        }}
+      >
+        <BuyText>
+          {user.username === ""
+            ? "Log In to Buy"
+            : user.isVerified
+            ? "Buy"
+            : "Verify to Buy"}
+        </BuyText>
+      </BuyButton>
+    </Container>
+  );
+}
 
 const Container = styled.View`
   display: flex;
@@ -34,20 +67,3 @@ const PriceText = styled.Text`
   font-size: 16px;
   width: 50%;
 `;
-
-export default function BuySection({ coin }) {
-    const navigation = useNavigation();
-  return (
-    <Container>
-      <PriceText>Current Price: ${parseFloat(coin.price).toFixed(2)}</PriceText>
-      <BuyButton
-        onPress={() => {
-            console.log("pressed");
-            navigation.navigate("HomeStack", { screen: "Calculator", params: { coin } });
-        }}
-      >
-        <BuyText>Buy</BuyText>
-      </BuyButton>
-    </Container>
-  );
-}

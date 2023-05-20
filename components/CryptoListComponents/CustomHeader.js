@@ -1,8 +1,37 @@
-import React from "react";
+import React, {useContext} from "react";
 import styled from "styled-components";
 import { FontAwesome } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CoinsList } from "../../context/CryptoContext.js";
+
+export default function CustomHeader() {
+  const {user} = useContext(CoinsList);
+  const navigation = useNavigation();
+
+  return (
+    <Header>
+      <Container>
+        <FontAwesome
+          name="search"
+          size={24}
+          color="white"
+          onPress={() => {
+            navigation.navigate("HomeStack", { screen: "Search" });
+          }}
+        />
+        {user.isVerified && <FontAwesome
+          name="user-circle-o"
+          size={24}
+          color="white"
+          onPress={() => {
+            navigation.navigate("HomeStack", { screen: "User" });
+          }}
+        />}
+      </Container>
+    </Header>
+  );
+}
 
 const Header = styled.View`
   background-color: #1f2630;
@@ -23,27 +52,3 @@ const Container = styled.View`
   padding-right: 20px;
   justify-content: flex-end;
 `;
-
-export default function CustomHeader(props) {
-  const navigation = useNavigation();
-  return (
-    <Header>
-      <Container>
-        <FontAwesome
-          name="search"
-          size={24}
-          color="white"
-          onPress={() => {
-            navigation.navigate("HomeStack", { screen: "Search" });
-          }}
-        />
-        <FontAwesome name="user-circle-o" size={24} color="white"
-          onPress={() => {
-            navigation.navigate("HomeStack", { screen: "User" });
-            
-          }}
-        />
-      </Container>
-    </Header>
-  );
-}

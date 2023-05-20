@@ -11,7 +11,7 @@ export default function UserScreen() {
 
   return (
     <>
-      <CustomHeader />
+      <CustomHeader headerText={"Account Info"}/>
       <ScrollView>
         <HeroSection />
         <ChangeUsernameSection />
