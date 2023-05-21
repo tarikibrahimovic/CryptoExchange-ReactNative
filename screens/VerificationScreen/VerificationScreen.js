@@ -12,12 +12,11 @@ async function saveTokenAndUsername(token, username) {
   await SecureStore.setItemAsync("username", username);
 }
 
-async function getTokenAndUsername() {
-  const token = await SecureStore.getItemAsync("jwtToken");
-  const username = await SecureStore.getItemAsync("username");
-  // return { token, username };
-  console.log(token, username);
-}
+// async function getTokenAndUsername() {
+//   const token = await SecureStore.getItemAsync("jwtToken");
+//   const username = await SecureStore.getItemAsync("username");
+//   // return { token, username };
+// }
 
 export default function VerificationScreen() {
   const [verificationCode, setVerificationCode] = useState("");
@@ -29,7 +28,6 @@ export default function VerificationScreen() {
 
   const navigation = useNavigation();
 
-  getTokenAndUsername();
 
   useEffect(() => {
     if (sendEmailPressed) {
@@ -80,7 +78,6 @@ export default function VerificationScreen() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.error) {
           setErrors(data.error);
         } else {

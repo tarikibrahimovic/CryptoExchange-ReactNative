@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import CryptoListItem from "./CryptoListItem";
 import { CoinsList } from "../../context/CryptoContext";
 import { ActivityIndicator } from "react-native";
-import {COINS_URL, COINS_OPTIONS} from "../../env";
-
+import { COINS_URL, COINS_OPTIONS } from "../../env";
 
 export default function CryptoList() {
   const {
@@ -12,29 +11,34 @@ export default function CryptoList() {
     isLoading,
     setIsLoading,
     favoriteCoins,
+    setFavoriteCoins,
     coins,
     setCoins,
-    fetchCoins,
+    user,
   } = useContext(CoinsList);
-  
+
   const [filteredData, setFilteredData] = useState([]);
+  const [start, setStart] = useState(0);
 
   useEffect(() => {
-    fetchCoins(COINS_URL, COINS_OPTIONS, setCoins);
+    const start = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(COINS_URL, COINS_OPTIONS);
+        const data = await response.json();
+        setCoins(data.data.coins);
+        setFavoriteCoins(data.data.coins.slice(0, 6));
+        setIsLoading(false);
+        setStart(1);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    start();
   }, []);
 
-  // useEffect(() => {
-  //   fetch("https://api.coingecko.com/api/v3/search/trending", {
-  //     method: "GET",
-  //   }).then((response) => response.json())
-  //   .then((result) => {
-  //     setHotCoins(result.coins);
-  //     console.log(result.coins);
-  //   }).catch((error) => console.log("error", error));
-  // }, []);
-
-
   useEffect(() => {
+    if (start === 0) return;
     setIsLoading(true);
     if (active === "Top10") {
       let pom = [...coins];
@@ -61,11 +65,18 @@ export default function CryptoList() {
     } else if (active === "WatchList") {
       setFilteredData([]);
       setTimeout(() => {
-        setFilteredData(favoriteCoins);
+        if (!user.isVerified || user.username === "") {
+          setFilteredData([...coins].slice(0, 6));
+        } else {
+          let pom = coins.filter((coin) => {
+            return user.favorites?.includes(coin.uuid);
+          });
+          setFilteredData(pom);
+        }
       }, 10);
     }
     setIsLoading(false);
-  }, [filter, active]);
+  }, [filter, active, start]);
 
 
   return (
@@ -79,5 +90,4 @@ export default function CryptoList() {
       )}
     </>
   );
-  isLoading;
 }

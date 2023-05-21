@@ -7,6 +7,7 @@ import CryptoList from "../../components/CryptoListComponents/CryptoList";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { CoinsList } from "../../context/CryptoContext";
 import VerifySection from "../../components/WelcomeSection/VerifySection";
+import LoginSection from "../../components/WelcomeSection/LoginSection";
 
 export default function HomeScreen(props) {
   const scrollViewRef = useRef(null);
@@ -16,8 +17,6 @@ export default function HomeScreen(props) {
   const handleScrollToTop = () => {
     scrollViewRef.current.scrollTo({ y: 0, animated: true });
   };
-
-  console.log(user);
 
   return (
     <View style={{ flex: 1 }}>
@@ -35,7 +34,7 @@ export default function HomeScreen(props) {
           }
         }}
       >
-        {user.username === "" ? <WelcomeSection /> : (!user.isVerified ? <VerifySection /> : null)}
+        {user.username === "" ? <LoginSection /> : (!user.isVerified ? <VerifySection /> : <WelcomeSection />)}
         <CryptoListHeader />
         <CryptoList />
       </ScrollView>

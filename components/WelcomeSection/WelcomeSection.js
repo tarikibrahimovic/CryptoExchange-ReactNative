@@ -1,14 +1,19 @@
-import React from "react";
-import styled from "styled-components";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { Button } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import React from 'react'
+import styled from 'styled-components'
+
+export default function WelcomeSection() {
+  return (
+    <Container>
+      <Title>Welcome to Crypto Exchange</Title>
+      <SubTitle>Trade with us!</SubTitle>
+    </Container>
+  )
+}
 
 const Container = styled.View`
   margin: 0 10px;
-  margin-top: 20px;
   padding: 20px 0;
-  background-color: #29313c;
+  background-color: ${(props) => props.theme.colors.secondary};
   border-radius: 10px;
   gap: 25px;
   display: flex;
@@ -17,68 +22,15 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const TextContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-`;
-
 const Title = styled.Text`
   font-size: 20px;
-  color: white;
+  color: ${(props) => props.theme.colors.logo};
   font-weight: bold;
   ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
-const Line = styled.View`
-  height: 1px;
-  width: 90%;
-  background-color: #fff;
-  margin-bottom: 5px;
+const SubTitle = styled.Text`
+  font-size: 16px;
+  color: #fff;
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
-
-const ButtonContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-`;
-
-export default function WelcomeSection() {
-  const navigation = useNavigation();
-  return (
-    <>
-      <Container>
-        <TextContainer>
-          <Title>Welcome to Crypto Exchange</Title>
-          <FontAwesome5 name="coins" size={30} color="#FCD434" />
-        </TextContainer>
-        <Line />
-        <ButtonContainer>
-          <Button
-            mode="outlined"
-            textColor="white"
-            onPress={() => {
-              navigation.navigate("AuthStack", { screen: "Register" });
-            }}
-          >
-            Sign Up
-          </Button>
-          <Button
-            mode="contained"
-            buttonColor="#FCD434"
-            textColor="#000"
-            onPress={() => {
-              navigation.navigate("AuthStack", { screen: "Login" });
-            }}
-          >
-            Login
-          </Button>
-        </ButtonContainer>
-      </Container>
-    </>
-  );
-}

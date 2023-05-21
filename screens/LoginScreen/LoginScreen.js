@@ -16,13 +16,6 @@ async function saveTokenAndUsername(token, username) {
   await SecureStore.setItemAsync("username", username);
 }
 
-async function getTokenAndUsername() {
-  const token = await SecureStore.getItemAsync("jwtToken");
-  const username = await SecureStore.getItemAsync("username");
-  // return { token, username };
-  console.log(token, username);
-}
-
 const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
@@ -84,6 +77,7 @@ export default function LoginScreen() {
                 role: data.role,
                 token: data.token,
                 isVerified: data.token ? true : false,
+                favorites: data.favorites?.map((coin) => coin.coinId),
               };
             });
 
@@ -96,7 +90,6 @@ export default function LoginScreen() {
     }
   };
 
-  console.log(registerMessage);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>

@@ -32,13 +32,11 @@ export default function RegisterScreen() {
 
   const handleRegister = () => {
     setErrors("");
-    console.log("pokrenulo se");
     if (!validateEmail(email)) {
       setErrors("invalid email");
     } else if (!validatePassword(password)) {
       setErrors("invalid password");
     } else {
-      console.log(BACKEND_URL);
       fetch(`${BACKEND_URL}/auth/register`, {
         method: "POST",
         headers: {
