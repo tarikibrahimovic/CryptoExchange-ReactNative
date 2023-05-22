@@ -9,7 +9,7 @@ export default function VerifySection() {
       <VerifySectionTitle>Verify your account</VerifySectionTitle>
       <VerifyButton
         onPress={() =>
-          navigation.navigate("HomeStack", { screen: "Verification" })
+          navigation.navigate("AuthStack", { screen: "Verification" })
         }
       >
         <VerifyButtonText>Verify</VerifyButtonText>

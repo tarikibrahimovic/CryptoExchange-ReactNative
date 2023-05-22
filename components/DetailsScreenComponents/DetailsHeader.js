@@ -28,6 +28,12 @@ export default function DetailsHeader({ coinId }) {
   }, []);
 
   const toggleFavorite = async () => {
+    if (user.username === "") {
+      navigate.navigate("AuthStack", { screen: "Login" });
+    }
+    else if(user.username !== "" && user.isVerified === false){
+      navigate.navigate("AuthStack", { screen: "Verify" });
+    }
     if (isFavorite) {
       try {
         const response = await fetch(

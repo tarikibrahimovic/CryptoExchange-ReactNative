@@ -58,6 +58,7 @@ function AuthStackNavigator() {
     >
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Verification" component={VerificationScreen} />
     </Stack.Navigator>
   );
 }
@@ -76,7 +77,6 @@ function HomeStackNavigator() {
       <Stack.Screen name="User" component={UserScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Details" component={CoinDetailsScreen} />
-      <Stack.Screen name="Verification" component={VerificationScreen} />
     </Stack.Navigator>
   );
 }
