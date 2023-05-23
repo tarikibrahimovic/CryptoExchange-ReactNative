@@ -6,23 +6,29 @@ import { CoinsList } from "../../context/CryptoContext";
 export default function BuySection({ coin }) {
   const { user } = useContext(CoinsList);
   const navigation = useNavigation();
+
+  const buyHandler = () => {
+    if (user.username === "") {
+      navigation.navigate("AuthStack", { screen: "Login" });
+    } else if (!user.isVerified) {
+      navigation.navigate("HomeStack", { screen: "Verification" });
+    } else {
+      navigation.navigate("HomeStack", {
+        screen: "Calculator",
+        params: { coinId: coin.uuid },
+      });
+    }
+  };
+
   return (
     <Container>
-      <PriceText>Current Price: ${parseFloat(coin.price).toFixed(2)}</PriceText>
-      <BuyButton
-        onPress={() => {
-          if (user.username === "") {
-            navigation.navigate("AuthStack", { screen: "Login" });
-          } else if (!user.isVerified) {
-            navigation.navigate("HomeStack", { screen: "Verification" });
-          } else {
-            navigation.navigate("HomeStack", {
-              screen: "Calculator",
-              params: { coin },
-            });
-          }
-        }}
-      >
+      <PriceTextContainer>
+        <PriceText>Price: ${parseFloat(coin.price).toFixed(2)}</PriceText>
+        {user.balance !== 0 && (
+          <PriceText>Balance: ${parseFloat(user.balance).toFixed(2)}</PriceText>
+        )}
+      </PriceTextContainer>
+      <BuyButton onPress={() => buyHandler()}>
         <BuyText>
           {user.username === ""
             ? "Log In to Buy"
@@ -48,6 +54,13 @@ const Container = styled.View`
   z-index: 100;
 `;
 
+const PriceTextContainer = styled.View`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
 const BuyButton = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.colors.logo};
   padding: 16px;
@@ -65,5 +78,5 @@ const BuyText = styled.Text`
 const PriceText = styled.Text`
   color: ${(props) => props.theme.colors.tertiary};
   font-size: 16px;
-  width: 50%;
+  width: 100%;
 `;

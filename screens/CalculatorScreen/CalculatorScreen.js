@@ -9,19 +9,145 @@ import SvgUri from "react-native-svg-uri";
 import defaultCoin from "../../assets/defaultCoin.png";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BACKEND_URL } from "../../env";
+import { ScrollView } from "react-native";
 
 export default function CalculatorScreen() {
-  const { getCoin, allowedCoins, user } = useContext(CoinsList);
+  const { getCoin, allowedCoins, user, setUser } = useContext(CoinsList);
   const coinId = useRoute().params.coinId;
+  // const [userCoinAmount, setUserCoinAmount] = useState(0.0);
   const [coin, setCoin] = useState();
   const [option, setOption] = useState("Sell");
   const [error, setError] = useState(false);
+  const [payingError, setPayingError] = useState("");
+  const [payingMessage, setPayingMessage] = useState("");
   const [payingOption, setPayinOption] = useState(true);
   const [amount, setAmount] = useState(0.0);
   const [query, setQuery] = useState(0.0);
   const [inputValue, setInputValue] = useState("");
 
   const navigation = useNavigation();
+
+  const buyFetch = (coinAmount) => {
+    fetch(`${BACKEND_URL}/exchange/buy`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        coinAmount: coinAmount,
+        coinPrice: coin.price,
+        coinId: coinId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.error) {
+          setPayingError(data.error);
+        } else {
+          setUser((prev) => {
+            return {
+              ...prev,
+              balance: data.balance,
+              exchanges: data.exchanges,
+            };
+          });
+          setPayingMessage("Successfully bought");
+          setPayingError("");
+          setInputValue("");
+          setQuery(0.0);
+          setError(false);
+        }
+      })
+      .catch((err) => {
+        setPayingError("Something went wrong");
+      });
+  };
+
+  const sellFetch = (coinAmount) => {
+    fetch(`${BACKEND_URL}/exchange/sell`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        coinAmount: coinAmount,
+        coinPrice: coin.price,
+        coinId: coinId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setPayingError(data.error);
+        } else {
+          setUser((prev) => {
+            return {
+              ...prev,
+              balance: data.balance,
+              exchanges: data.exchanges,
+            };
+          });
+          setPayingMessage("Successfully sold");
+          setPayingError("");
+          setInputValue("");
+          setQuery(0.0);
+          setError(false);
+        }
+      })
+      .catch((err) => {
+        setPayingError("Something went wrong");
+      });
+  };
+
+  const handlePaying = () => {
+    if (user.username === "") {
+      navigation.navigate("AuthStack", { screen: "Login" });
+    } else if (!user.isVerified) {
+      navigation.navigate("AuthStack", { screen: "Verification" });
+    } else {
+      if (inputValue.length === 0) {
+        setPayingError("Please enter amount");
+        return;
+      }
+      if (option === "Sell") {
+        if (payingOption) {
+          if (user.balance > amount * coin.price) {
+            buyFetch(amount);
+          } else {
+            setPayingError("Not enough money");
+            return;
+          }
+        } else {
+          if (user.balance < amount) {
+            setPayingError("Not enough money");
+            return;
+          }
+          buyFetch(query);
+        }
+      } else {
+        const userCoinAmount = user.exchanges.filter(
+          (item) => item.coinId === coinId
+        )[0].coinAmount;
+        if (payingOption) {
+          if (userCoinAmount < amount) {
+            setPayingError("Not enough coins");
+            return;
+          }
+          sellFetch(amount);
+        } else {
+          if (userCoinAmount < query) {
+            setPayingError("Not enough coins");
+            return;
+          }
+          sellFetch(query);
+        }
+      }
+    }
+  };
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -92,7 +218,8 @@ export default function CalculatorScreen() {
       pom += number;
       setInputValue(pom);
     } else if (pom.length < 10) {
-      pom += number.toString();
+      if (pom === "0") pom = "";
+      pom += number;
       setInputValue(pom);
       setQuery(parseFloat(pom));
     }
@@ -116,64 +243,89 @@ export default function CalculatorScreen() {
             )}
           </Option>
         </Header>
-        <InfoHeader>
-          {!error ? (
-            logoHandler()
-          ) : (
-            <Avatar.Image size={50} source={defaultCoin} />
-          )}
-          <CoinNameText>{coin?.name}</CoinNameText>
-        </InfoHeader>
         <Container>
-          <LabelContainer>
-            <LabelText style={{ color: "#707889" }}>I want to pay</LabelText>
-            <Text
-              style={{ color: "#FCD434" }}
-              onPress={() => setPayinOption(!payingOption)}
-            >
-              By: {payingOption ? "Quantity" : "Amount"}{" "}
-              <MaterialIcons name="compare-arrows" size={16} color="#FCD434" />
-            </Text>
-          </LabelContainer>
-          <InputView>
-            {query === 0 ? (
-              <LabelText>Please enter the amount</LabelText>
-            ) : (
-              <OptionText>{inputValue}</OptionText>
+          <ScrollView>
+            <InfoHeader>
+              {!error ? (
+                logoHandler()
+              ) : (
+                <Avatar.Image size={50} source={defaultCoin} />
+              )}
+              <CoinNameText>{coin?.name}</CoinNameText>
+            </InfoHeader>
+            {payingError.length > 0 && (
+              <PayingErrorText>{payingError}</PayingErrorText>
             )}
-            <LabelText>USD</LabelText>
-          </InputView>
-          {option === "Sell" && (
+            {payingMessage.length > 0 && (
+              <PayingSuccessText>{payingMessage}</PayingSuccessText>
+            )}
             <LabelContainer>
-              <OptionButton
-                onPress={() => {
-                  handleQuery(20);
-                }}
+              <LabelText style={{ color: "#707889" }}>I want to pay</LabelText>
+              <Text
+                style={{ color: "#FCD434" }}
+                onPress={() => setPayinOption(!payingOption)}
               >
-                <OptionText>20</OptionText>
-              </OptionButton>
-              <OptionButton
-                onPress={() => {
-                  handleQuery(50);
-                }}
-              >
-                <OptionText>50</OptionText>
-              </OptionButton>
-              <OptionButton
-                onPress={() => {
-                  handleQuery(100);
-                }}
-              >
-                <OptionText>100</OptionText>
-              </OptionButton>
+                By: {payingOption ? "Quantity" : "Amount"}{" "}
+                <MaterialIcons
+                  name="compare-arrows"
+                  size={16}
+                  color="#FCD434"
+                />
+              </Text>
             </LabelContainer>
-          )}
-          <LabelContainer>
-            <LabelText>
-              Amount: {amount} {coin?.symbol}
-            </LabelText>
-          </LabelContainer>
+            <InputView>
+              {inputValue.length > 0 ? (
+                <OptionText>{inputValue}</OptionText>
+              ) : (
+                <LabelText>Please enter the amount</LabelText>
+              )}
+              <LabelText>USD</LabelText>
+            </InputView>
+            {option === "Sell" && (
+              <LabelContainer>
+                <OptionButton
+                  onPress={() => {
+                    handleQuery(20);
+                  }}
+                >
+                  <OptionText>20</OptionText>
+                </OptionButton>
+                <OptionButton
+                  onPress={() => {
+                    handleQuery(50);
+                  }}
+                >
+                  <OptionText>50</OptionText>
+                </OptionButton>
+                <OptionButton
+                  onPress={() => {
+                    handleQuery(100);
+                  }}
+                >
+                  <OptionText>100</OptionText>
+                </OptionButton>
+              </LabelContainer>
+            )}
+            <LabelContainer>
+              <LabelText>
+                {payingOption ? "Amount" : "Price"}: {amount}{" "}
+                {payingOption && coin?.symbol}
+              </LabelText>
+            </LabelContainer>
+          </ScrollView>
           <Keyboard>
+            <KeyboardRow>
+              <UserAmountText>
+                {user.isVerified &&
+                  (option === "Sell"
+                    ? `Balance: ${user.balance}`
+                    : `Coin amoint: ${
+                        user.exchanges.filter(
+                          (item) => item.coinId === coinId
+                        )[0]?.coinAmount || 0
+                      }`)}
+              </UserAmountText>
+            </KeyboardRow>
             <KeyboardRow>
               <KeyboardButton onPress={() => handleKeyboard(1)}>
                 <KeyboardText>1</KeyboardText>
@@ -219,12 +371,11 @@ export default function CalculatorScreen() {
               </KeyboardButton>
             </KeyboardRow>
             <KeyboardRow>
-              <FinalButton>
+              <FinalButton onPress={() => handlePaying()}>
                 <KeyboardText>
-                  {/* {option === "Sell" ?  "Buy" : "Sell"} */}
                   {user.username === ""
                     ? "Login"
-                    : !username.isVerified
+                    : !user.isVerified
                     ? "Verify"
                     : option === "Sell"
                     ? "Buy"
@@ -244,7 +395,8 @@ const Header = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 1px 10px;
+  margin-top: 10px;
 `;
 
 const Option = styled.View`
@@ -267,7 +419,6 @@ const InfoHeader = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding: 5px 20px;
 `;
 
 const CoinNameText = styled.Text`
@@ -360,4 +511,25 @@ const KeyboardRow = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+`;
+
+const PayingErrorText = styled.Text`
+  color: #f00;
+  font-size: 16px;
+  margin: 10px;
+  text-align: center;
+`;
+
+const PayingSuccessText = styled.Text`
+  color: #0f0;
+  font-size: 16px;
+  margin: 10px;
+  text-align: center;
+`;
+
+const UserAmountText = styled.Text`
+  color: #fff;
+  font-size: 12px;
+  margin: 10px;
+  text-align: center;
 `;

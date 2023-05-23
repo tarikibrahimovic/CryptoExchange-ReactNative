@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import CustomHeader from "../../components/CryptoListComponents/CustomHeader"
+import CustomHeader from "../../components/CryptoListComponents/CustomHeader";
 import { ScrollView, View } from "react-native";
 import WelcomeSection from "../../components/WelcomeSection/WelcomeSection";
 import CryptoListHeader from "../../components/CryptoListComponents/CryptoListHeader";
@@ -12,7 +12,7 @@ import LoginSection from "../../components/WelcomeSection/LoginSection";
 export default function HomeScreen(props) {
   const scrollViewRef = useRef(null);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const {user} = useContext(CoinsList);
+  const { user } = useContext(CoinsList);
 
   const handleScrollToTop = () => {
     scrollViewRef.current.scrollTo({ y: 0, animated: true });
@@ -34,7 +34,13 @@ export default function HomeScreen(props) {
           }
         }}
       >
-        {user.username === "" ? <LoginSection /> : (!user.isVerified ? <VerifySection /> : <WelcomeSection />)}
+        {user.username === "" ? (
+          <LoginSection />
+        ) : !user.isVerified ? (
+          <VerifySection />
+        ) : (
+          <WelcomeSection />
+        )}
         <CryptoListHeader />
         <CryptoList />
       </ScrollView>

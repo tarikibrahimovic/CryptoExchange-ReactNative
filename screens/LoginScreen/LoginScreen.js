@@ -78,6 +78,8 @@ export default function LoginScreen() {
                 token: data.token,
                 isVerified: data.token ? true : false,
                 favorites: data.favorites?.map((coin) => coin.coinId),
+                balance: data.balance,
+                exchanges : data.exchanges
               };
             });
 

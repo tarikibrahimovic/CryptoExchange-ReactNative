@@ -17,7 +17,9 @@ const CryptoContextProvider = ({ children }) => {
     role: "",
     token: "",
     isVerified: false,
-    favorites: []
+    favorites: [],
+    balance: 0,
+    exchanges: [],
   });
   const [allowedCoins, setAllowedCoins] = useState(["Bitcoin",
   "Ethereum",
