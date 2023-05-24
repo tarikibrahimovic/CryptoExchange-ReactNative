@@ -15,7 +15,6 @@ import { ScrollView } from "react-native";
 export default function CalculatorScreen() {
   const { getCoin, allowedCoins, user, setUser } = useContext(CoinsList);
   const coinId = useRoute().params.coinId;
-  // const [userCoinAmount, setUserCoinAmount] = useState(0.0);
   const [coin, setCoin] = useState();
   const [option, setOption] = useState("Sell");
   const [error, setError] = useState(false);
@@ -109,10 +108,12 @@ export default function CalculatorScreen() {
     } else if (!user.isVerified) {
       navigation.navigate("AuthStack", { screen: "Verification" });
     } else {
-      if (inputValue.length === 0) {
+      if (inputValue.length === 0 || query === 0.0) {
         setPayingError("Please enter amount");
         return;
       }
+      setPayingMessage("Successfully bought");
+      setPayingError("");
       if (option === "Sell") {
         if (payingOption) {
           if (user.balance > amount * coin.price) {
