@@ -12,7 +12,7 @@ export default function ChangePasswordSection() {
   const [newPassword, setNewPassword] = useState("");
 
   return (
-    <>
+    <KeyboardAvoidingView behavior="padding">
       <HeaderSection>
         <HeaderText
           onPress={() => {
@@ -67,7 +67,7 @@ export default function ChangePasswordSection() {
         </Container>
       )}
       <Line />
-    </>
+    </KeyboardAvoidingView>
   );
 }
 

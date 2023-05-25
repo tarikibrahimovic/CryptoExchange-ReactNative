@@ -8,6 +8,7 @@ import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { CoinsList } from "../../context/CryptoContext";
 import VerifySection from "../../components/WelcomeSection/VerifySection";
 import LoginSection from "../../components/WelcomeSection/LoginSection";
+import HomeSlider from "../../components/HomeSlider/HomeSlider";
 
 export default function HomeScreen(props) {
   const scrollViewRef = useRef(null);
@@ -22,7 +23,7 @@ export default function HomeScreen(props) {
     <View style={{ flex: 1 }}>
       <CustomHeader />
       <ScrollView
-        stickyHeaderIndices={[1]}
+        stickyHeaderIndices={[2]}
         style={{ flex: 1, position: "relative" }}
         ref={scrollViewRef}
         scrollEventThrottle={16}
@@ -41,6 +42,7 @@ export default function HomeScreen(props) {
         ) : (
           <WelcomeSection />
         )}
+        <HomeSlider />
         <CryptoListHeader />
         <CryptoList />
       </ScrollView>

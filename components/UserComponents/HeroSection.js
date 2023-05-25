@@ -10,7 +10,6 @@ export default function HeroSection() {
 
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
-    // console.log(result);
   };
 
   return (

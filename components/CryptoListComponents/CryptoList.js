@@ -3,6 +3,7 @@ import CryptoListItem from "./CryptoListItem";
 import { CoinsList } from "../../context/CryptoContext";
 import { ActivityIndicator } from "react-native";
 import { COINS_URL, COINS_OPTIONS } from "../../env";
+import EmptySection from "../WalletScreenComponents/EmptySection";
 
 export default function CryptoList() {
   const {
@@ -10,7 +11,6 @@ export default function CryptoList() {
     filter,
     isLoading,
     setIsLoading,
-    favoriteCoins,
     setFavoriteCoins,
     coins,
     setCoins,
@@ -78,13 +78,22 @@ export default function CryptoList() {
     setIsLoading(false);
   }, [filter, active, start]);
 
-
   return (
     <>
       {!isLoading ? (
-        filteredData.map((item, index) => (
-          <CryptoListItem coin={item} index={index} />
-        ))
+        filteredData.length > 0 ? (
+          filteredData.map((item, index) => (
+            <CryptoListItem coin={item} index={index} />
+          ))
+        ) : (
+          active === "WatchList" && (
+            <EmptySection
+              option="watchlist"
+              title={"You have no favorites!"}
+              subtitle={"Add coins to your list"}
+            />
+          )
+        )
       ) : (
         <ActivityIndicator size="large" />
       )}

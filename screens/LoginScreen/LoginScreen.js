@@ -29,14 +29,13 @@ export default function LoginScreen() {
   const [registerMessage, setRegisterMessage] = useState("");
   const [errors, setErrors] = useState();
   const navigation = useNavigation();
-  const {params} = useRoute();
+  const { params } = useRoute();
 
   useEffect(() => {
     if (params?.message) {
       setRegisterMessage(params.message);
     }
   }, [params]);
-
 
   const validatePassword = (password) => {
     if (password.length < 8) {
@@ -79,7 +78,7 @@ export default function LoginScreen() {
                 isVerified: data.token ? true : false,
                 favorites: data.favorites?.map((coin) => coin.coinId),
                 balance: data.balance,
-                exchanges : data.exchanges
+                exchanges: data.exchanges,
               };
             });
 
@@ -91,7 +90,6 @@ export default function LoginScreen() {
         });
     }
   };
-
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>

@@ -83,7 +83,6 @@ export default function DetailsHeader({ coinId }) {
     }
   };
 
-  console.log(isFavorite);
 
   return (
     <HeaderContainer>

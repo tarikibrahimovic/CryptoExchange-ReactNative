@@ -42,7 +42,6 @@ export default function CalculatorScreen() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.error) {
           setPayingError(data.error);
         } else {

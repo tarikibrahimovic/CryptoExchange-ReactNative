@@ -10,7 +10,7 @@ export default function ChangeUsernameSection() {
   const [username, setUsername] = useState("");
 
   return (
-    <>
+    <KeyboardAvoidingView behavior="padding">
       <HeaderSection>
         <HeaderText
           onPress={() => {
@@ -42,7 +42,7 @@ export default function ChangeUsernameSection() {
         </Container>
       )}
       <Line />
-    </>
+    </KeyboardAvoidingView>
   );
 }
 

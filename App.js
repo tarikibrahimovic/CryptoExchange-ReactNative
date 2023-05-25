@@ -8,7 +8,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import WalletScreen from "./screens/WalletScreen/WalletScreen";
 import { CryptoContextProvider } from "./context/CryptoContext";
 import SearchScreen from "./screens/SearchScreen/SearchScreen";
-import { SafeAreaView } from "react-native";
 import CoinDetailsScreen from "./screens/CoinDetailsScreen/CoinDetailsScreen";
 import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
 import ExchangeScreen from "./screens/ExchangeScreen/ExchangeScreen";

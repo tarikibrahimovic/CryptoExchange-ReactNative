@@ -8,10 +8,9 @@ import { ScrollView } from "react-native";
 import LogOutButton from "../../components/UserComponents/LogOutButton";
 
 export default function UserScreen() {
-
   return (
     <>
-      <CustomHeader headerText={"Account Info"}/>
+      <CustomHeader headerText={"Account Info"} />
       <ScrollView>
         <HeroSection />
         <ChangeUsernameSection />

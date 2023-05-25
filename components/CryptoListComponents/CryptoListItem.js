@@ -6,24 +6,6 @@ import defaultCoin from "../../assets/defaultCoin.png";
 import { useNavigation } from "@react-navigation/native";
 import { CoinsList } from "../../context/CryptoContext";
 
-const CustomCard = styled(Card)`
-  margin: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #29313c;
-`;
-
-const PriceText = styled.Text`
-  font-size: 16px;
-  color: #fff;
-`;
-
-const PercentageText = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  align-self: flex-end;
-`;
-
 const CryptoListItem = ({ coin, type = "details" }) => {
   const { allowedCoins } = useContext(CoinsList);
 
@@ -34,7 +16,7 @@ const CryptoListItem = ({ coin, type = "details" }) => {
       <CustomCard
         onPress={() => {
           type === "details"
-            ? navigation.navigate("HomeStack", {
+          ? navigation.navigate("HomeStack", {
                 screen: "Details",
                 params: { coinId: coin.uuid },
               })
@@ -42,8 +24,8 @@ const CryptoListItem = ({ coin, type = "details" }) => {
                 screen: "Calculator",
                 params: { coinId: coin.uuid },
               });
-        }}
-      >
+            }}
+            >
         <Card.Title
           title={coin?.name}
           subtitle={coin?.symbol}
@@ -57,19 +39,19 @@ const CryptoListItem = ({ coin, type = "details" }) => {
                 source={{
                   uri: coin.iconUrl,
                 }}
-              />
+                />
             ) : allowedCoins.includes(coin.name) ? (
               <SvgUri
-                {...props}
-                width="50"
+              {...props}
+              width="50"
                 height="50"
                 source={{
                   uri: coin.iconUrl,
                 }}
-              />
-            ) : (
+                />
+                ) : (
               <Avatar.Image {...props} size={50} source={defaultCoin} />
-            )
+              )
           }
           right={(props) => (
             <>
@@ -79,7 +61,7 @@ const CryptoListItem = ({ coin, type = "details" }) => {
                   fontSize: 16,
                   fontWeight: "bold",
                 }}
-              >
+                >
                 {coin.change}%
               </PercentageText>
               <PriceText
@@ -98,3 +80,21 @@ const CryptoListItem = ({ coin, type = "details" }) => {
 };
 
 export default CryptoListItem;
+
+const CustomCard = styled(Card)`
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #29313c;
+`;
+
+const PriceText = styled.Text`
+  font-size: 16px;
+  color: #fff;
+`;
+
+const PercentageText = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-end;
+`;

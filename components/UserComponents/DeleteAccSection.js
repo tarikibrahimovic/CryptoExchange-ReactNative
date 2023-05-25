@@ -13,7 +13,14 @@ export default function DeleteAccSection() {
   const [password, setPassword] = useState("");
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
       <HeaderSection>
         <HeaderText
           onPress={() => {
@@ -68,61 +75,63 @@ export default function DeleteAccSection() {
         }
       >
         <ModalContent>
-          <ModalHeaderText>Are you sure you want to delete your account?</ModalHeaderText>
-            <ModalButtonContainer>
-                <ModalNoButton
-                    mode="contained"
-                    onPress={() => {
-                        setModalVisibility(false);
-                    }}
-                >
-                    <SubmitButtonTextNo>No</SubmitButtonTextNo>
-                </ModalNoButton>
-                <ModalYesButton
-                    mode="contained"
-                    onPress={() => {
-                        setModalVisibility(false);
-                    }}
-                >
-                    <SubmitButtonText>Yes</SubmitButtonText>
-                </ModalYesButton>
-            </ModalButtonContainer>
+          <ModalHeaderText>
+            Are you sure you want to delete your account?
+          </ModalHeaderText>
+          <ModalButtonContainer>
+            <ModalNoButton
+              mode="contained"
+              onPress={() => {
+                setModalVisibility(false);
+              }}
+            >
+              <SubmitButtonTextNo>No</SubmitButtonTextNo>
+            </ModalNoButton>
+            <ModalYesButton
+              mode="contained"
+              onPress={() => {
+                setModalVisibility(false);
+              }}
+            >
+              <SubmitButtonText>Yes</SubmitButtonText>
+            </ModalYesButton>
+          </ModalButtonContainer>
         </ModalContent>
       </Modal>
-    </>
+    </KeyboardAvoidingView>
   );
 }
 
 const ModalButtonContainer = styled.View`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    margin: 10px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin: 10px 0;
 `;
 
 const SubmitButtonTextNo = styled.Text`
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
 `;
 
 const ModalYesButton = styled(Button)`
-    background-color: ${(props) => props.theme.colors.logo};
-    width: 48%;
+  background-color: ${(props) => props.theme.colors.logo};
+  width: 48%;
 `;
 
 const ModalNoButton = styled(Button)`
-    background-color: ${(props) => props.theme.colors.secondary};
-    width: 48%;
+  background-color: ${(props) => props.theme.colors.secondary};
+  width: 48%;
 `;
 
 const ModalHeaderText = styled.Text`
-    font-size: 24px;
-    color: black;
-    font-weight: bold;
-    text-align: center;
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+  text-align: center;
 `;
 
 const SubmitButton = styled(Button)`
