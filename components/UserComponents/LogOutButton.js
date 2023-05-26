@@ -20,6 +20,10 @@ export default function LogOutButton() {
         role: "",
         token: "",
         isVerified: false,
+        favorites: [],
+        balance: 0,
+        exchanges: [],
+        pictureUrl: "",
       };
     });
     navigation.navigate("Home");

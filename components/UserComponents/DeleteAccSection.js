@@ -1,27 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { Modal, ModalContent, SlideAnimation } from "react-native-modals";
 import { KeyboardAvoidingView, Platform } from "react-native";
+import { BACKEND_URL } from "../../env";
+import { useNavigation } from "@react-navigation/native";
+import { CoinsList } from "../../context/CryptoContext";
+import * as SecureStore from "expo-secure-store";
+
 
 export default function DeleteAccSection() {
   const [visible, setVisible] = useState(false);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigation = useNavigation();
+  const { user, setUser } = useContext(CoinsList);
+
+  const deleteAcc = async () => {
+    if (!password) {
+      setError("Password is required");
+      return;
+    } else if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+    try {
+      const response = await fetch(`${BACKEND_URL}/user/deleteAccount`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          password: password,
+        }),
+      });
+      const data = await response.json();
+      setUser((prev) => {
+        return {
+          username: "",
+          email: "",
+          role: "",
+          token: "",
+          isVerified: false,
+          favorites: [],
+          balance: 0,
+          exchanges: [],
+          pictureUrl: "",
+        };
+      });
+      await SecureStore.deleteItemAsync("jwtToken");
+      await SecureStore.deleteItemAsync("username");
+      navigation.navigate("Home");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
       behavior="padding"
       style={{
-        flex: 1,
         flexDirection: "column",
         justifyContent: "center",
       }}
     >
       <HeaderSection>
+        {error ? <ErrorText>{error}</ErrorText> : null}
         <HeaderText
           onPress={() => {
             setVisible(!visible);
@@ -91,6 +140,7 @@ export default function DeleteAccSection() {
               mode="contained"
               onPress={() => {
                 setModalVisibility(false);
+                deleteAcc();
               }}
             >
               <SubmitButtonText>Yes</SubmitButtonText>
@@ -185,6 +235,14 @@ const HeaderSection = styled.View`
 const HeaderText = styled.Text`
   font-size: 24px;
   color: white;
+  font-weight: bold;
+  text-align: center;
+  margin: 5px 0;
+`;
+
+const ErrorText = styled.Text`
+  font-size: 16px;
+  color: red;
   font-weight: bold;
   text-align: center;
   margin: 5px 0;

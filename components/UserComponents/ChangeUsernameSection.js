@@ -1,13 +1,53 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { KeyboardAvoidingView, Platform } from "react-native";
+import { BACKEND_URL } from "../../env";
+import { CoinsList } from "../../context/CryptoContext";
 
 export default function ChangeUsernameSection() {
   const [visible, setVisible] = useState(false);
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+  const [succesText, setSuccesText] = useState("");
+  const { user, setUser } = useContext(CoinsList);
+
+  const changeUsername = async () => {
+    if (!username) {
+      setError("Username is required");
+      return;
+    } else if (username.length < 3) {
+      setError("Username must be at least 3 characters long");
+      return;
+    }
+    try {
+      const response = await fetch(`${BACKEND_URL}/user/changeUsername`, {
+        method: "Patch",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          username: username,
+        }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+      setUser((prev) => {
+        return { ...prev, username: username, token: data.token };
+      });
+      setError("");
+      setUsername("");
+      setSuccesText("Username changed succesfully");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding">
@@ -17,7 +57,7 @@ export default function ChangeUsernameSection() {
             setVisible(!visible);
           }}
         >
-          Change username{" "}
+          Change Username{" "}
           {visible ? (
             <AntDesign name="up" size={24} color="white" />
           ) : (
@@ -27,6 +67,8 @@ export default function ChangeUsernameSection() {
       </HeaderSection>
       {visible && (
         <Container>
+          {succesText && <SuccesText>{succesText}</SuccesText>}
+          {error && <ErrorText>{error}</ErrorText>}
           <Label>Your new username</Label>
           <CustomTextInput
             value={username}
@@ -36,7 +78,12 @@ export default function ChangeUsernameSection() {
             placeholder="Username"
             required={visible}
           />
-          <SubmitButton mode="contained" onPress={() => {}}>
+          <SubmitButton
+            mode="contained"
+            onPress={() => {
+              changeUsername();
+            }}
+          >
             <SubmitButtonText>Submit changes</SubmitButtonText>
           </SubmitButton>
         </Container>
@@ -99,4 +146,20 @@ const HeaderText = styled.Text`
   font-weight: bold;
   text-align: center;
   margin: 5px 0;
+`;
+
+const ErrorText = styled.Text`
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin: 5px 0;
+`;
+
+const SuccesText = styled.Text`
+  font-size: 16px;
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
 `;

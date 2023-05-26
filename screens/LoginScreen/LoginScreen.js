@@ -23,11 +23,11 @@ const validateEmail = (email) => {
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("tarikibrahimovic2016@gmail.com");
-  const { user, setUser } = useContext(CoinsList);
-  const [password, setPassword] = useState("tarik123");
+  const { setUser } = useContext(CoinsList);
+  const [password, setPassword] = useState("tarik333");
   const [showPassword, setShowPassword] = useState(false);
   const [registerMessage, setRegisterMessage] = useState("");
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState("");
   const navigation = useNavigation();
   const { params } = useRoute();
 
@@ -39,20 +39,21 @@ export default function LoginScreen() {
 
   const validatePassword = (password) => {
     if (password.length < 8) {
-      setErrors("Password must be at least 8 characters long");
       return false;
     }
     return true;
   };
 
-  const handleLogin = () => {
-    setErrors("");
-    if (!validateEmail(email)) {
-      setErrors("invalid email");
-    } else if (!validatePassword(password)) {
-      setErrors("invalid password");
-    } else {
-      fetch(`${BACKEND_URL}/auth/login`, {
+  const handleLogin = async () => {
+    try {
+      if (!validateEmail(email)) {
+        setErrors("invalid email");
+        return;
+      } else if (!validatePassword(password)) {
+        setErrors("Password must be at least 8 characters long!");
+        return;
+      }
+      const response = await fetch(`${BACKEND_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,35 +62,33 @@ export default function LoginScreen() {
           email: email,
           password: password,
         }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.error) {
-            setErrors(data.error);
-          } else {
-            setErrors("");
-            saveTokenAndUsername(data.token, data.username);
-            setUser((prev) => {
-              return {
-                username: data.username,
-                email: data.email,
-                role: data.role,
-                token: data.token,
-                isVerified: data.token ? true : false,
-                favorites: data.favorites?.map((coin) => coin.coinId),
-                balance: data.balance,
-                exchanges: data.exchanges,
-              };
-            });
-
-            navigation.navigate("Home");
-          }
-        })
-        .catch((error) => {
-          setErrors(error.error);
+      });
+      const data = await response.json();
+      if (data.error) {
+        setErrors(data.error);
+      }
+      if (data.token) {
+        saveTokenAndUsername(data.token, data.username);
+        setUser((prev) => {
+          return {
+            username: data.username,
+            email: data.email,
+            role: data.role,
+            token: data.token,
+            isVerified: data.token ? true : false,
+            favorites: data.favorites?.map((coin) => coin.coinId),
+            balance: data.balance,
+            exchanges: data.exchanges,
+            pictureUrl: data.pictureUrl,
+          };
         });
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      setErrors("Something went wrong, please try again!");
     }
   };
+
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>

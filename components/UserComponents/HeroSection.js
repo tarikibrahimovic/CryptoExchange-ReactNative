@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import styled from "styled-components";
 import { Modal, ModalContent, SlideAnimation } from "react-native-modals";
 import * as DocumentPicker from "expo-document-picker";
 import { theme } from "../../theme/index";
+import { CoinsList } from "../../context/CryptoContext";
+import ProfilePicture from "./ProfilePicture";
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false);
+  const { user } = useContext(CoinsList);
 
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
@@ -14,12 +17,16 @@ export default function HeroSection() {
 
   return (
     <Container>
-      <FontAwesome
-        name="user-circle-o"
-        size={70}
-        color={theme.colors.logo}
-        onPress={() => setVisible(true)}
-      />
+      {user.pictureUrl ? (
+        <ProfilePicture source={{ uri: user.pictureUrl }} />
+      ) : (
+        <FontAwesome
+          name="user-circle-o"
+          size={70}
+          color={theme.colors.logo}
+          onPress={() => setVisible(true)}
+        />
+      )}
       <Modal
         visible={visible}
         onTouchOutside={() => {
@@ -36,15 +43,19 @@ export default function HeroSection() {
             <PickButtonText>Pick a picture</PickButtonText>
           </PickButton>
           <Line />
-          <ModalText>Or</ModalText>
-          <DeletePicrueButton>
-            <DeletePicrueButtonText>
-              Delete profile picture
-            </DeletePicrueButtonText>
-          </DeletePicrueButton>
+          {user.pictureUrl && (
+            <>
+              <ModalText>Or</ModalText>
+              <DeletePicrueButton>
+                <DeletePicrueButtonText>
+                  Delete profile picture
+                </DeletePicrueButtonText>
+              </DeletePicrueButton>
+            </>
+          )}
         </ModalContent>
       </Modal>
-      <UsernameText>Username</UsernameText>
+      <UsernameText>{user.username}</UsernameText>
     </Container>
   );
 }
@@ -94,19 +105,19 @@ const DeletePicrueButtonText = styled.Text`
 `;
 
 const ModalText = styled.Text`
-    font-size: 24px;
-    color: black;
-    font-weight: bold;
-    text-align: center;
-    margin: 5px 0;
-    ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  margin: 5px 0;
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
 
 const UsernameText = styled.Text`
-    font-size: 24px;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    margin: 20px 0;
-    ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
 `;
