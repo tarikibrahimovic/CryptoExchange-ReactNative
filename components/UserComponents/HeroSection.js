@@ -2,29 +2,107 @@ import React, { useContext, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import styled from "styled-components";
 import { Modal, ModalContent, SlideAnimation } from "react-native-modals";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { theme } from "../../theme/index";
 import { CoinsList } from "../../context/CryptoContext";
-import ProfilePicture from "./ProfilePicture";
+import { BACKEND_URL } from "../../env";
+import { Image } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false);
-  const { user } = useContext(CoinsList);
+  const { user, setUser } = useContext(CoinsList);
+  const [picture, setPicture] = useState(null);
 
-  const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
+  const pickImage = async () => {
+    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+    let response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.2,
+    });
+    if (response.cancelled) {
+      return;
+    }
+    const formData = new FormData();
+
+    formData.append("image", {
+      uri: response.assets[0].uri,
+      name: response.assets[0].fileName,
+      type: response.assets[0].type,
+    });
+    setPicture(formData);
+  };
+
+  const uploadPicture = async () => {
+    try {
+      let data = await fetch(`${BACKEND_URL}/user/uploadImage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: picture,
+      });
+      let response = await data.json();
+      setUser((prev) => {
+        return { ...prev, pictureUrl: response.pictureUrl };
+      });
+      setVisible(false);
+      setPicture(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteImage = async () => {
+    try {
+      let data = await fetch(`${BACKEND_URL}/user/deleteImage`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      let response = await data.json();
+      setUser((prev) => {
+        return { ...prev, pictureUrl: "" };
+      });
+      setVisible(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const openModal = () => {
+    setVisible(true);
   };
 
   return (
     <Container>
       {user.pictureUrl ? (
-        <ProfilePicture source={{ uri: user.pictureUrl }} />
+        <TouchableOpacity onPress={openModal}>
+          <Image
+            source={{ uri: user.pictureUrl }}
+            style={{
+              width: 70,
+              height: 70,
+              borderRadius: 35,
+              alignSelf: "center",
+              marginBottom: 10,
+            }}
+          />
+        </TouchableOpacity>
       ) : (
         <FontAwesome
           name="user-circle-o"
           size={70}
           color={theme.colors.logo}
-          onPress={() => setVisible(true)}
+          onPress={openModal}
         />
       )}
       <Modal
@@ -39,19 +117,24 @@ export default function HeroSection() {
         }
       >
         <ModalContent>
-          <PickButton onPress={pickDocument}>
+          <PickButton onPress={pickImage}>
             <PickButtonText>Pick a picture</PickButtonText>
           </PickButton>
           <Line />
           {user.pictureUrl && (
             <>
               <ModalText>Or</ModalText>
-              <DeletePicrueButton>
+              <DeletePicrueButton onPress={deleteImage}>
                 <DeletePicrueButtonText>
                   Delete profile picture
                 </DeletePicrueButtonText>
               </DeletePicrueButton>
             </>
+          )}
+          {picture && (
+            <PickButton onPress={uploadPicture}>
+              <PickButtonText>Upload</PickButtonText>
+            </PickButton>
           )}
         </ModalContent>
       </Modal>

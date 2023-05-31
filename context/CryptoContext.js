@@ -30,13 +30,10 @@ const CryptoContextProvider = ({ children }) => {
     pictureUrl: "",
   });
 
-  // console.log(user);
-
   useEffect(() => {
     const getUser = async () => {
       const token = await getToken();
-      console.log("token", token);
-      if (token) {
+      if (token.length > 0) {
         try {
           const response = await fetch(`${BACKEND_URL}/user/refresh`, {
             method: "GET",
@@ -46,7 +43,6 @@ const CryptoContextProvider = ({ children }) => {
             },
           });
           const data = await response.json();
-          console.log(data);
           setUser((prev) => {
             return {
               username: data.username,
@@ -61,7 +57,8 @@ const CryptoContextProvider = ({ children }) => {
             };
           });
         } catch (e) {
-          console.log(e);
+          await AsyncStorage.removeItem("jwtToken");
+          await AsyncStorage.removeItem("username");
         }
       }
     };

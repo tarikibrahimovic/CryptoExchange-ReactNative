@@ -18,7 +18,7 @@ export default function HomeScreen(props) {
   const handleScrollToTop = () => {
     scrollViewRef.current.scrollTo({ y: 0, animated: true });
   };
-
+  
   return (
     <View style={{ flex: 1 }}>
       <CustomHeader />
