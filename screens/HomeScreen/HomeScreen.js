@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import CustomHeader from "../../components/CryptoListComponents/CustomHeader";
 import { ScrollView, View } from "react-native";
 import WelcomeSection from "../../components/WelcomeSection/WelcomeSection";

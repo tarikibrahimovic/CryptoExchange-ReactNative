@@ -8,11 +8,13 @@ import { CoinsList } from "../../context/CryptoContext";
 import { BACKEND_URL } from "../../env";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
+import LoadingScreen from "./LoadingScreen";
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false);
   const { user, setUser } = useContext(CoinsList);
   const [picture, setPicture] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pickImage = async () => {
     let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -40,6 +42,7 @@ export default function HeroSection() {
 
   const uploadPicture = async () => {
     try {
+      setIsLoading(true);
       let data = await fetch(`${BACKEND_URL}/user/uploadImage`, {
         method: "POST",
         headers: {
@@ -57,10 +60,14 @@ export default function HeroSection() {
     } catch (err) {
       console.log(err);
     }
+    finally {
+      setIsLoading(false);
+    }
   };
 
   const deleteImage = async () => {
     try {
+      setIsLoading(true);
       let data = await fetch(`${BACKEND_URL}/user/deleteImage`, {
         method: "DELETE",
         headers: {
@@ -76,6 +83,9 @@ export default function HeroSection() {
     } catch (err) {
       console.log(err);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
   const openModal = () => {
@@ -83,7 +93,8 @@ export default function HeroSection() {
   };
 
   return (
-    <Container>
+    <>
+    {!isLoading ? <Container>
       {user.pictureUrl ? (
         <TouchableOpacity onPress={openModal}>
           <Image
@@ -139,7 +150,8 @@ export default function HeroSection() {
         </ModalContent>
       </Modal>
       <UsernameText>{user.username}</UsernameText>
-    </Container>
+    </Container> : <LoadingScreen/>}
+    </>
   );
 }
 
@@ -149,6 +161,7 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  position: relative;
 `;
 
 const PickButton = styled.TouchableOpacity`
