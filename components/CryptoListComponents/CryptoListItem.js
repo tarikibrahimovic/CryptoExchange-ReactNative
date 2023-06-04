@@ -12,7 +12,6 @@ const CryptoListItem = ({ coin, type = "details" }) => {
   const navigation = useNavigation();
 
   return (
-    <>
       <CustomCard
         onPress={() => {
           type === "details"
@@ -75,7 +74,6 @@ const CryptoListItem = ({ coin, type = "details" }) => {
           )}
         />
       </CustomCard>
-    </>
   );
 };
 

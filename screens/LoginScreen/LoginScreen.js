@@ -68,6 +68,7 @@ export default function LoginScreen() {
         setErrors(data.error);
       }
       if (data.token) {
+        console.log(data);
         saveTokenAndUsername(data.token, data.username);
         setUser((prev) => {
           return {

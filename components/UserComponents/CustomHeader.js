@@ -30,7 +30,7 @@ export default function CustomHeader({ headerText }) {
     return (
         <HeaderContainer>
           <AntDesign name="arrowleft" size={24} color={theme.colors.tertiary}
-          onPress={() => (navigate.navigate("Home"))}
+          onPress={() => (navigate.goBack())}
           />
           
           <AboutText>{headerText}</AboutText>

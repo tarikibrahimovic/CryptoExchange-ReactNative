@@ -3,9 +3,9 @@ import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, SafeAreaView } from "react-native";
 import styled from "styled-components";
-import { Searchbar } from "react-native-paper";
 import { CoinsList } from "../../context/CryptoContext";
 import CryptoListItem from "../../components/CryptoListComponents/CryptoListItem";
+import { Searchbar } from "react-native-paper";
 
 const SearchBar = styled(Searchbar)`
   margin-top: 20px;

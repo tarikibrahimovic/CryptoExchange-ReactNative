@@ -9,6 +9,7 @@ import { BACKEND_URL } from "../../env";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import LoadingScreen from "./LoadingScreen";
+import { Platform } from "react-native";
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false);
@@ -18,25 +19,29 @@ export default function HeroSection() {
 
   const pickImage = async () => {
     let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
     if (status !== "granted") {
       alert("Sorry, we need camera roll permissions to make this work!");
       return;
     }
+
     let response = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.2,
     });
-    if (response.cancelled) {
+
+    if (response.canceled) {
       return;
     }
-    const formData = new FormData();
 
+    formData = new FormData();
     formData.append("image", {
       uri: response.assets[0].uri,
-      name: response.assets[0].fileName,
-      type: response.assets[0].type,
+      name: response.assets[0].uri.split("/").pop(),
+      type: "image/jpeg",
     });
+
     setPicture(formData);
   };
 
@@ -59,8 +64,7 @@ export default function HeroSection() {
       setPicture(null);
     } catch (err) {
       console.log(err);
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -82,8 +86,7 @@ export default function HeroSection() {
       setVisible(false);
     } catch (err) {
       console.log(err);
-    }
-    finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -94,63 +97,67 @@ export default function HeroSection() {
 
   return (
     <>
-    {!isLoading ? <Container>
-      {user.pictureUrl ? (
-        <TouchableOpacity onPress={openModal}>
-          <Image
-            source={{ uri: user.pictureUrl }}
-            style={{
-              width: 70,
-              height: 70,
-              borderRadius: 35,
-              alignSelf: "center",
-              marginBottom: 10,
+      {!isLoading ? (
+        <Container>
+          {user.pictureUrl ? (
+            <TouchableOpacity onPress={openModal}>
+              <Image
+                source={{ uri: user.pictureUrl }}
+                style={{
+                  width: 70,
+                  height: 70,
+                  borderRadius: 35,
+                  alignSelf: "center",
+                  marginBottom: 10,
+                }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <FontAwesome
+              name="user-circle-o"
+              size={70}
+              color={theme.colors.logo}
+              onPress={openModal}
+            />
+          )}
+          <Modal
+            visible={visible}
+            onTouchOutside={() => {
+              setVisible(false);
             }}
-          />
-        </TouchableOpacity>
+            modalAnimation={
+              new SlideAnimation({
+                slideFrom: "bottom",
+              })
+            }
+          >
+            <ModalContent>
+              <PickButton onPress={pickImage}>
+                <PickButtonText>Pick a picture</PickButtonText>
+              </PickButton>
+              <Line />
+              {user.pictureUrl && (
+                <>
+                  <ModalText>Or</ModalText>
+                  <DeletePicrueButton onPress={deleteImage}>
+                    <DeletePicrueButtonText>
+                      Delete profile picture
+                    </DeletePicrueButtonText>
+                  </DeletePicrueButton>
+                </>
+              )}
+              {picture && (
+                <PickButton onPress={uploadPicture}>
+                  <PickButtonText>Upload</PickButtonText>
+                </PickButton>
+              )}
+            </ModalContent>
+          </Modal>
+          <UsernameText>{user.username}</UsernameText>
+        </Container>
       ) : (
-        <FontAwesome
-          name="user-circle-o"
-          size={70}
-          color={theme.colors.logo}
-          onPress={openModal}
-        />
+        <LoadingScreen />
       )}
-      <Modal
-        visible={visible}
-        onTouchOutside={() => {
-          setVisible(false);
-        }}
-        modalAnimation={
-          new SlideAnimation({
-            slideFrom: "bottom",
-          })
-        }
-      >
-        <ModalContent>
-          <PickButton onPress={pickImage}>
-            <PickButtonText>Pick a picture</PickButtonText>
-          </PickButton>
-          <Line />
-          {user.pictureUrl && (
-            <>
-              <ModalText>Or</ModalText>
-              <DeletePicrueButton onPress={deleteImage}>
-                <DeletePicrueButtonText>
-                  Delete profile picture
-                </DeletePicrueButtonText>
-              </DeletePicrueButton>
-            </>
-          )}
-          {picture && (
-            <PickButton onPress={uploadPicture}>
-              <PickButtonText>Upload</PickButtonText>
-            </PickButton>
-          )}
-        </ModalContent>
-      </Modal>
-      <UsernameText>{user.username}</UsernameText>
-    </Container> : <LoadingScreen/>}
     </>
   );
 }
