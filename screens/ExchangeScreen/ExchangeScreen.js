@@ -17,13 +17,13 @@ const SearchBar = styled(Searchbar)`
 const HeaderContainer = styled.View`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: center;
 `;
 
 const CancelText = styled.Text`
-  color: #fcd434;
+  color: ${(props) => props.theme.colors.logo};
   font-size: 16px;
-  margin: 10px;
+  margin: 37px 10px;
 `;
 
 const HeaderText = styled.Text`

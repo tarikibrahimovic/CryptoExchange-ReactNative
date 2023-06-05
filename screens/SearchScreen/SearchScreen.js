@@ -6,27 +6,7 @@ import { ScrollView, ActivityIndicator } from "react-native";
 import CryptoListItem from "../../components/CryptoListComponents/CryptoListItem";
 import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const SearchBar = styled(Searchbar)`
-  margin-top: 50px;
-  margin-bottom: 30px;
-  background-color: #29313c;
-  width: 80%;
-`;
-
-const HeaderContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CancelText = styled.Text`
-  color: #fcd434;
-  font-size: 16px;
-  margin: 10px;
-  padding-top: 10px;
-`;
+import CustomHeader from "../../components/UserComponents/CustomHeader";
 
 export default memo(function SearchScreen() {
   const { isLoading, coins } = useContext(CoinsList);
@@ -59,7 +39,8 @@ export default memo(function SearchScreen() {
   }, [searchQuery]);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <>
+      <CustomHeader headerText={"Search"} />
       <HeaderContainer>
         <SearchBar
           placeholder="Search"
@@ -92,6 +73,25 @@ export default memo(function SearchScreen() {
           <ActivityIndicator size="large" />
         )}
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 });
+
+const SearchBar = styled(Searchbar)`
+  margin-bottom: 30px;
+  background-color: #29313c;
+  width: 80%;
+`;
+
+const HeaderContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const CancelText = styled.Text`
+  color: ${({ theme }) => theme.colors.logo};
+  font-size: 16px;
+  margin: 15px 10px;
+`;
+ 

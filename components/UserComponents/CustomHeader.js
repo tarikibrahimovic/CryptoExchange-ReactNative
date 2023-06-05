@@ -11,9 +11,8 @@ const HeaderContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: ${Platform.OS === "android" ? "40px" : '16px'};
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: ${Platform.OS === "android" ? "35px" : '16px'} 16px 0 16px;
+  margin: 15px 0;
   width: 100%;
 `;
 
