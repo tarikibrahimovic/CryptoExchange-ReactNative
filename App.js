@@ -22,6 +22,13 @@ import { ModalPortal } from "react-native-modals";
 import VerificationScreen from "./screens/VerificationScreen/VerificationScreen";
 import DepositScreen from "./screens/DepositScreen/DepositScreen";
 import AdminScreen from "./screens/AdminScreen/AdminScreen";
+import EmailScreen from "./screens/ForgotPasswordScreens/EmailScreen";
+import VerifyTokenScreen from "./screens/ForgotPasswordScreens/VerifyTokenScreen";
+import ResetPasswordScreen from "./screens/ForgotPasswordScreens/ResetPasswordScreen";
+import NetInfo from '@react-native-community/netinfo';
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 const CustomSafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -32,18 +39,38 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+
   return (
-    <ThemeProvider theme={theme}>
-      <CustomSafeAreaView>
-        <CryptoContextProvider>
-          <NavigationContainer>
-            <MainTabNavigator />
-          </NavigationContainer>
-          <StatusBar style="light" />
-        </CryptoContextProvider>
-        <ModalPortal />
-      </CustomSafeAreaView>
-    </ThemeProvider>
+    <>
+      {isConnected ? (
+        <ThemeProvider theme={theme}>
+        <CustomSafeAreaView>
+          <CryptoContextProvider>
+            <NavigationContainer>
+              <MainTabNavigator />
+            </NavigationContainer>
+            <StatusBar style="light" />
+          </CryptoContextProvider>
+          <ModalPortal />
+        </CustomSafeAreaView>
+      </ThemeProvider>) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20 }}>No Internet Connection</Text>
+        </View>
+      )}
+    </>
   );
 }
 
@@ -80,6 +107,10 @@ function HomeStackNavigator() {
       <Stack.Screen name="Details" component={CoinDetailsScreen} />
       <Stack.Screen name="Deposit" component={DepositScreen} />
       <Stack.Screen name="Admin" component={AdminScreen} />
+      <Stack.Screen name="Email" component={EmailScreen} />
+      <Stack.Screen name="Verify" component={VerifyTokenScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+
     </Stack.Navigator>
   );
 }

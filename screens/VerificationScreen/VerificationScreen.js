@@ -28,7 +28,6 @@ export default function VerificationScreen() {
 
   const navigation = useNavigation();
 
-
   useEffect(() => {
     if (sendEmailPressed) {
       const timer = setInterval(() => {

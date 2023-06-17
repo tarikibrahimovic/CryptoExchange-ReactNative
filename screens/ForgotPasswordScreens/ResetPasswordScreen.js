@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useState, useContext } from "react";
+import React from "react";
+import { useState } from "react";
 import { View, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
 import { Button } from "react-native-paper";
 import { SvgXml } from "react-native-svg";
@@ -8,34 +8,15 @@ import styled from "styled-components";
 import { TextInput } from "react-native-paper";
 import { BACKEND_URL } from "../../env.js";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { CoinsList } from "../../context/CryptoContext.js";
-import * as SecureStore from "expo-secure-store";
 
-async function saveTokenAndUsername(token, username) {
-  await SecureStore.setItemAsync("jwtToken", token);
-  await SecureStore.setItemAsync("username", username);
-}
-
-const validateEmail = (email) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-};
-
-export default function LoginScreen() {
-  const [email, setEmail] = useState("tarikibrahimovic2016@gmail.com");
-  const { setUser } = useContext(CoinsList);
+export default function ResetPasswordScreen() {
   const [password, setPassword] = useState("tarik333");
+  const [confirmPassword, setConfirmPassword] = useState("tarik333");
   const [showPassword, setShowPassword] = useState(false);
   const [registerMessage, setRegisterMessage] = useState("");
   const [errors, setErrors] = useState("");
   const navigation = useNavigation();
-  const { params } = useRoute();
-
-  useEffect(() => {
-    if (params?.message) {
-      setRegisterMessage(params.message);
-    }
-  }, [params]);
+  const { token, email } = useRoute().params;
 
   const validatePassword = (password) => {
     if (password.length < 8) {
@@ -44,16 +25,16 @@ export default function LoginScreen() {
     return true;
   };
 
-  const handleLogin = async () => {
+  const handleSubmit = async () => {
     try {
-      if (!validateEmail(email)) {
-        setErrors("invalid email");
-        return;
-      } else if (!validatePassword(password)) {
+      if (!validatePassword(password)) {
         setErrors("Password must be at least 8 characters long!");
         return;
+      } else if (password !== confirmPassword) {
+        setErrors("Passwords do not match!");
+        return;
       }
-      const response = await fetch(`${BACKEND_URL}/auth/login`, {
+      const response = await fetch(`${BACKEND_URL}/auth/forgotPassword`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,35 +42,22 @@ export default function LoginScreen() {
         body: JSON.stringify({
           email: email,
           password: password,
+          token: token,
         }),
       });
       const data = await response.json();
-      if (data.error) {
+      if (data.message) {
+        navigation.navigate("AuthStack", {
+          screen: "Login",
+          message: "Password reset successfully!",
+        });
+      } else {
         setErrors(data.error);
       }
-      if (data.token) {
-        console.log(data);
-        saveTokenAndUsername(data.token, data.username);
-        setUser((prev) => {
-          return {
-            username: data.username,
-            email: data.email,
-            role: data.role,
-            token: data.token,
-            isVerified: data.token ? true : false,
-            favorites: data.favorites?.map((coin) => coin.coinId),
-            balance: data.balance,
-            exchanges: data.exchanges,
-            pictureUrl: data.pictureUrl,
-          };
-        });
-        navigation.navigate("Home");
-      }
     } catch (error) {
-      setErrors("Something went wrong, please try again!");
+      console.log(error);
     }
   };
-
 
   return (
     <KeyboardAvoidingView behavior="padding">
@@ -99,23 +67,12 @@ export default function LoginScreen() {
           <LogoText>Crypto Exchange</LogoText>
         </LogoSection>
         <InputSection>
-          <LoginText>Login</LoginText>
+          <LoginText>Reset Password</LoginText>
           <Line></Line>
           {errors?.length > 0 && <ErrorText>{errors}</ErrorText>}
           {registerMessage?.length > 0 && (
             <MessageText>{registerMessage}</MessageText>
           )}
-          <View>
-            <Label>Email</Label>
-            <TextInput
-              value={email}
-              outlineColor="#FCD434"
-              mode="outlined"
-              onChangeText={(text) => setEmail(text)}
-              placeholder="email@gmail.com"
-              required
-            />
-          </View>
           <View>
             <Label>Password</Label>
             <TextInput
@@ -134,40 +91,31 @@ export default function LoginScreen() {
             />
           </View>
           <View>
-            <Button
-              mode="contained"
-              onPress={() => handleLogin()}
-              buttonColor="#FCD434"
-              textColor="#1F2630"
-            >
-              Login
-            </Button>
-          </View>
-          <View>
-            <Button
-              mode="contained"
-              buttonColor="#FCD434"
-              textColor="#1F2630"
-            >
-              Login with Google
-            </Button>
-          </View>
-          <View>
-            <ForgotPassword
-            onPress={() =>
-              navigation.navigate("HomeStack", { screen: "Email" })
-            }
-            >Forgot Password?</ForgotPassword>
-          </View>
-          <Line />
-          <View>
-            <ForgotPassword
-              onPress={() =>
-                navigation.navigate("AuthStack", { screen: "Register" })
+            <Label>Confirm password</Label>
+            <TextInput
+              mode="outlined"
+              outlineColor="#FCD434"
+              placeholder="*******"
+              value={confirmPassword}
+              secureTextEntry={!showPassword}
+              right={
+                <TextInput.Icon
+                  icon="eye"
+                  onPress={() => setShowPassword(!showPassword)}
+                />
               }
+              onChangeText={(text) => setConfirmPassword(text)}
+            />
+          </View>
+          <View>
+            <Button
+              mode="contained"
+              onPress={() => handleSubmit()}
+              buttonColor="#FCD434"
+              textColor="#1F2630"
             >
-              Don't have an account? Sign Up!
-            </ForgotPassword>
+              Reset Password
+            </Button>
           </View>
         </InputSection>
       </ScrollView>
@@ -219,11 +167,6 @@ const LoginText = styled.Text`
   text-align: center;
   margin: 5px 0;
   ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
-`;
-
-const ForgotPassword = styled.Text`
-  font-size: 16px;
-  color: #3837fd;
 `;
 
 const ErrorText = styled.Text`
