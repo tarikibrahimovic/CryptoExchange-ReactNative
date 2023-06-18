@@ -12,6 +12,7 @@ import * as Google from "expo-auth-session/providers/google";
 import { useContext } from "react";
 import { CoinsList } from "../../context/CryptoContext.js";
 import * as SecureStore from "expo-secure-store";
+import { AntDesign } from '@expo/vector-icons';
 
 async function saveTokenAndUsername(token, username) {
   await SecureStore.setItemAsync("jwtToken", token);
@@ -216,20 +217,26 @@ export default function RegisterScreen() {
             </Button>
           </View>
           <View>
-            <Button
+            <GoogleButton
               mode="contained"
               onPress={() => promptAsync()}
               buttonColor="#FCD434"
               textColor="#1F2630"
             >
+              <AntDesign name="google" size={16} color="#FCD434" />
               Sing Up with Google
-            </Button>
+            </GoogleButton>
           </View>
         </InputSection>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
+
+const GoogleButton = styled(Button)`
+  background-color: #707889;
+  color: #1f2630;
+`;
 
 const InputSection = styled.View`
   margin: 0 10px;

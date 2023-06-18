@@ -27,6 +27,7 @@ import VerifyTokenScreen from "./screens/ForgotPasswordScreens/VerifyTokenScreen
 import ResetPasswordScreen from "./screens/ForgotPasswordScreens/ResetPasswordScreen";
 // import NetInfo from "@react-native-community/netinfo";
 import React, { useState, useEffect } from "react";
+import WithdrawalScreen from "./screens/WithdrawalScreen/WithdrawalScreen";
 import { Text } from "react-native";
 
 const CustomSafeAreaView = styled.SafeAreaView`
@@ -107,6 +108,7 @@ function HomeStackNavigator() {
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Details" component={CoinDetailsScreen} />
       <Stack.Screen name="Deposit" component={DepositScreen} />
+      <Stack.Screen name="Withdraw" component={WithdrawalScreen} />
       <Stack.Screen name="Admin" component={AdminScreen} />
       <Stack.Screen name="Email" component={EmailScreen} />
       <Stack.Screen name="Verify" component={VerifyTokenScreen} />

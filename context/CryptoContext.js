@@ -50,6 +50,7 @@ const CryptoContextProvider = ({ children }) => {
               email: data.email,
               role: data.role,
               token: data.token,
+              type: data.type,
               isVerified: data.token ? true : false,
               favorites: data.favorites?.map((coin) => coin.coinId),
               balance: data.balance,

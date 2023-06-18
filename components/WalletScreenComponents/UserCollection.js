@@ -10,7 +10,7 @@ export default function UserCollection() {
 
   useEffect(() => {
     setCoins((prev) => {
-      return user.exchanges.map((coin) => getCoin(coin.coinId));
+      return user?.exchanges.map((coin) => getCoin(coin.coinId));
     });
   }, []);
 

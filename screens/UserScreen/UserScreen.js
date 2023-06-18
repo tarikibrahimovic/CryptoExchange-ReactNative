@@ -16,7 +16,7 @@ export default function UserScreen() {
       <CustomHeader headerText={"Account Info"} />
       <ScrollView>
         <HeroSection />
-        {user.type === "email" && (
+        {user.type === "Email" && (
           <>
             <ChangeUsernameSection />
             <ChangePasswordSection />

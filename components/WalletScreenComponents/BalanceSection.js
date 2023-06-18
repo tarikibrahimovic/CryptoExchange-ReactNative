@@ -46,6 +46,16 @@ export default function BalanceSection() {
           Deposit Now
         </LogoDepositText>
       </DepositText>
+      <DepositText>
+        Want to Withdraw?{" "}
+        <LogoDepositText
+          onPress={() =>
+            navigation.navigate("HomeStack", { screen: "Withdraw" })
+          }
+        >
+          Withdraw Now
+        </LogoDepositText>
+      </DepositText>
     </Container>
   );
 }

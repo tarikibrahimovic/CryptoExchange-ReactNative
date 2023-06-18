@@ -12,6 +12,7 @@ import { CoinsList } from "../../context/CryptoContext.js";
 import * as SecureStore from "expo-secure-store";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
+import { AntDesign } from '@expo/vector-icons';
 
 async function saveTokenAndUsername(token, username) {
   await SecureStore.setItemAsync("jwtToken", token);
@@ -105,7 +106,7 @@ export default function LoginScreen() {
             balance: data.balance,
             exchanges: data.exchanges,
             pictureUrl: data.pictureUrl,
-            type: "google",
+            type: "Google",
           };
         });
         navigation.navigate("Home");
@@ -150,8 +151,10 @@ export default function LoginScreen() {
       if (data.error) {
         setErrors(data.error);
       }
-      if (data.token) {
-        saveTokenAndUsername(data.token, data.username);
+      if (data.email) {
+        if(data.token){
+          saveTokenAndUsername(data.token, data.username);
+        }
         setUser((prev) => {
           return {
             username: data.username,
@@ -163,7 +166,7 @@ export default function LoginScreen() {
             balance: data.balance,
             exchanges: data.exchanges,
             pictureUrl: data.pictureUrl,
-            type: "email",
+            type: "Email",
           };
         });
         navigation.navigate("Home");
@@ -215,11 +218,6 @@ export default function LoginScreen() {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
-          {/* <Button>
-            <Text style={{ color: "#fff" }} onPress={promptAsync}>
-              Sign with Google
-            </Text>
-          </Button> */}
           <View>
             <Button
               mode="contained"
@@ -231,14 +229,13 @@ export default function LoginScreen() {
             </Button>
           </View>
           <View>
-            <Button
+            <GoogleButton
               mode="contained"
-              buttonColor="#FCD434"
-              textColor="#1F2630"
               onPress={() => promptAsync()}
             >
+              <AntDesign name="google" size={16} color="#FCD434" />
               Login with Google
-            </Button>
+            </GoogleButton>
           </View>
           <View>
             <ForgotPassword
@@ -264,6 +261,11 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+const GoogleButton = styled(Button)`
+  background-color: #707889;
+  color: #1f2630;
+`;
 
 const InputSection = styled.View`
   margin: 0 10px;
