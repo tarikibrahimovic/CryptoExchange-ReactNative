@@ -10,6 +10,8 @@ import { BACKEND_URL } from "../../env.js";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { CoinsList } from "../../context/CryptoContext.js";
 import * as SecureStore from "expo-secure-store";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
 
 async function saveTokenAndUsername(token, username) {
   await SecureStore.setItemAsync("jwtToken", token);
@@ -22,9 +24,17 @@ const validateEmail = (email) => {
 };
 
 export default function LoginScreen() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [init, setInit] = useState(true);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "638693331166-mb6j43ql4sm8bat0ka1dobhgplnqls0k.apps.googleusercontent.com",
+    iosClientId:
+      "638693331166-94og1sgd694qe7mmmm6p92kku8fes37e.apps.googleusercontent.com",
+  });
   const [email, setEmail] = useState("tarikibrahimovic2016@gmail.com");
   const { setUser } = useContext(CoinsList);
-  const [password, setPassword] = useState("tarik333");
+  const [password, setPassword] = useState("tarik123");
   const [showPassword, setShowPassword] = useState(false);
   const [registerMessage, setRegisterMessage] = useState("");
   const [errors, setErrors] = useState("");
@@ -42,6 +52,79 @@ export default function LoginScreen() {
       return false;
     }
     return true;
+  };
+
+  useEffect(() => {
+    if (init) {
+      setInit(false);
+    } else {
+      handleSignInWithGoogle();
+    }
+  }, [response]);
+
+  const handleSignInWithGoogle = async () => {
+    // console.log(response);
+    if (response?.type === "success") {
+      // await getUserInfo(response.authentication.accessToken)
+      await handleGoogleLogin(
+        await getUserInfo(response.authentication.accessToken)
+      );
+    }
+  };
+
+  const handleGoogleLogin = async (userData) => {
+    try {
+      console.log("userInfo" + userInfo);
+      const response = await fetch(`${BACKEND_URL}/auth/google`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.id,
+          username: userData.name,
+          pictureUrl: userData.picture,
+        }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setErrors(data.error);
+      }
+      console.log("data" + data);
+      if (data.token) {
+        saveTokenAndUsername(data.token, data.username);
+        setUser((prev) => {
+          return {
+            username: data.username,
+            email: data.email,
+            role: data.role,
+            token: data.token,
+            isVerified: data.token ? true : false,
+            favorites: data.favorites?.map((coin) => coin.coinId),
+            balance: data.balance,
+            exchanges: data.exchanges,
+            pictureUrl: data.pictureUrl,
+            type: "google",
+          };
+        });
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.log(error);
+      setErrors("Something went wrong, please try again!");
+    }
+  };
+
+  const getUserInfo = async (token) => {
+    const response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const userInfoResponse = await response.json();
+    // console.log(userInfoResponse);
+    setUserInfo(userInfoResponse);
+    return userInfoResponse;
   };
 
   const handleLogin = async () => {
@@ -68,7 +151,6 @@ export default function LoginScreen() {
         setErrors(data.error);
       }
       if (data.token) {
-        console.log(data);
         saveTokenAndUsername(data.token, data.username);
         setUser((prev) => {
           return {
@@ -81,6 +163,7 @@ export default function LoginScreen() {
             balance: data.balance,
             exchanges: data.exchanges,
             pictureUrl: data.pictureUrl,
+            type: "email",
           };
         });
         navigation.navigate("Home");
@@ -89,7 +172,6 @@ export default function LoginScreen() {
       setErrors("Something went wrong, please try again!");
     }
   };
-
 
   return (
     <KeyboardAvoidingView behavior="padding">
@@ -133,6 +215,11 @@ export default function LoginScreen() {
               onChangeText={(text) => setPassword(text)}
             />
           </View>
+          {/* <Button>
+            <Text style={{ color: "#fff" }} onPress={promptAsync}>
+              Sign with Google
+            </Text>
+          </Button> */}
           <View>
             <Button
               mode="contained"
@@ -148,16 +235,19 @@ export default function LoginScreen() {
               mode="contained"
               buttonColor="#FCD434"
               textColor="#1F2630"
+              onPress={() => promptAsync()}
             >
               Login with Google
             </Button>
           </View>
           <View>
             <ForgotPassword
-            onPress={() =>
-              navigation.navigate("HomeStack", { screen: "Email" })
-            }
-            >Forgot Password?</ForgotPassword>
+              onPress={() =>
+                navigation.navigate("HomeStack", { screen: "Email" })
+              }
+            >
+              Forgot Password?
+            </ForgotPassword>
           </View>
           <Line />
           <View>

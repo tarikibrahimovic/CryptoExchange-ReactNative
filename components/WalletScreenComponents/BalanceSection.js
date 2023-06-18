@@ -31,7 +31,7 @@ export default function BalanceSection() {
         )}
       </TitleView>
       <BalanceText>
-        {showBalance ? `$${user.balance.toFixed(2)}` : "****"}
+        {showBalance ? `${user.balance?.toFixed(2) || 0}` : "****"}
       </BalanceText>
       <BuyButton onPress={() => navigation.navigate("Exchange")}>
         <BuyText>Buy</BuyText>

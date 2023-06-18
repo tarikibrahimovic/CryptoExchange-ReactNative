@@ -10,15 +10,19 @@ import { CoinsList } from "../../context/CryptoContext";
 import AdminSection from "../../components/UserComponents/AdminSection";
 
 export default function UserScreen() {
-  const {user} = useContext(CoinsList);
+  const { user } = useContext(CoinsList);
   return (
     <>
       <CustomHeader headerText={"Account Info"} />
       <ScrollView>
         <HeroSection />
-        <ChangeUsernameSection />
-        <ChangePasswordSection />
-        <DeleteAccSection />
+        {user.type === "email" && (
+          <>
+            <ChangeUsernameSection />
+            <ChangePasswordSection />
+            <DeleteAccSection />
+          </>
+        )}
         {user.role === "ADMIN" && <AdminSection />}
       </ScrollView>
       <LogOutButton />

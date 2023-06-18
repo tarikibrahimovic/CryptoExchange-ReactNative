@@ -28,6 +28,7 @@ const CryptoContextProvider = ({ children }) => {
     balance: 0,
     exchanges: [],
     pictureUrl: "",
+    type: "",
   });
 
   useEffect(() => {

@@ -154,6 +154,7 @@ export default function HeroSection() {
             </ModalContent>
           </Modal>
           <UsernameText>{user.username}</UsernameText>
+          <BalanceText>Balance: {user.balance?.toFixed(2) || 0}$</BalanceText>
         </Container>
       ) : (
         <LoadingScreen />
@@ -161,6 +162,15 @@ export default function HeroSection() {
     </>
   );
 }
+
+const BalanceText = styled.Text`
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin: 5px 0;
+  ${Platform.OS === "ios" ? "Helvetica" : "Roboto"}
+`;
 
 const Container = styled.View`
   display: flex;

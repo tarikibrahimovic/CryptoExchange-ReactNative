@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { View, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
 import { Button } from "react-native-paper";
@@ -8,6 +8,15 @@ import styled from "styled-components";
 import { TextInput } from "react-native-paper";
 import { BACKEND_URL } from "../../env.js";
 import { useNavigation } from "@react-navigation/native";
+import * as Google from "expo-auth-session/providers/google";
+import { useContext } from "react";
+import { CoinsList } from "../../context/CryptoContext.js";
+import * as SecureStore from "expo-secure-store";
+
+async function saveTokenAndUsername(token, username) {
+  await SecureStore.setItemAsync("jwtToken", token);
+  await SecureStore.setItemAsync("username", username);
+}
 
 const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,11 +33,90 @@ const validatePassword = (password) => {
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState("tarikibrahimovic2016@gmail.com");
+  const [init, setInit] = useState(true);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "638693331166-mb6j43ql4sm8bat0ka1dobhgplnqls0k.apps.googleusercontent.com",
+    iosClientId:
+      "638693331166-94og1sgd694qe7mmmm6p92kku8fes37e.apps.googleusercontent.com",
+  });
   const [password, setPassword] = useState("tarik123");
+  const [userInfo, setUserInfo] = useState(null);
+  const { user, setUser } = useContext(CoinsList);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState("");
   const [username, setUsername] = useState("Tarik");
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (init) {
+      setInit(false);
+      return;
+    } else {
+      handleSignInWithGoogle();
+    }
+  }, [response]);
+
+  const handleSignInWithGoogle = async () => {
+    if (response?.type === "success") {
+      // await getUserInfo(response.authentication.accessToken)
+      await handleGoogleRegister(
+        await getUserInfo(response.authentication.accessToken)
+      );
+    }
+  };
+
+  const handleGoogleRegister = async (userData) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/registerGoogle`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.id,
+          username: userData.name,
+          pictureUrl: userData.picture,
+        }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setErrors(data.error);
+      }
+      if (data.token) {
+        saveTokenAndUsername(data.token, data.username);
+        setUser((prev) => {
+          return {
+            username: data.username,
+            email: data.email,
+            role: data.role,
+            token: data.token,
+            isVerified: data.token ? true : false,
+            favorites: data.favorites?.map((coin) => coin.coinId),
+            balance: data.balance,
+            exchanges: data.exchanges,
+            pictureUrl: data.pictureUrl,
+            type: "google",
+          };
+        });
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.log(error);
+      setErrors("Something went wrong, please try again!");
+    }
+  };
+
+  const getUserInfo = async (token) => {
+    const response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const userInfoResponse = await response.json();
+    setUserInfo(userInfoResponse);
+    return userInfoResponse;
+  };
 
   const handleRegister = () => {
     setErrors("");
@@ -125,6 +213,16 @@ export default function RegisterScreen() {
               textColor="#1F2630"
             >
               Sing Up
+            </Button>
+          </View>
+          <View>
+            <Button
+              mode="contained"
+              onPress={() => promptAsync()}
+              buttonColor="#FCD434"
+              textColor="#1F2630"
+            >
+              Sing Up with Google
             </Button>
           </View>
         </InputSection>
